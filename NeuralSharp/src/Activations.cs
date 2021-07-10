@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NeuralSharp.Engine
+namespace NeuralSharp
 {
     public class Activations
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace NeuralSharp.Matrix
+namespace NeuralSharp
 {
     public partial class Matrix
     { 
@@ -68,13 +68,33 @@ namespace NeuralSharp.Matrix
         }
 
         public static bool operator ==(Matrix a, Matrix b)
-        {
-            return a?._data == b?._data && a?.Shape == b?.Shape;
+        {   // Returns true if the two matrices have the same reference or the same value
+            if (ReferenceEquals(null, a))
+            {
+                throw new NullReferenceException("The first matrix is null");
+            }
+
+            if (ReferenceEquals(null, b))
+            {
+                throw new NullReferenceException("The second matrix is null");
+            }
+            if (ReferenceEquals(a, b)) { return true; }
+            return a._data.SequenceEqual(b._data) && a.Shape.Equals(b.Shape);
         }
 
         public static bool operator !=(Matrix a, Matrix b)
-        {
-            return a?._data != b?._data || a?.Shape != b?.Shape;
+        {   // Returns true if the two matrices have the same reference or the same value
+            if (ReferenceEquals(null, a))
+            {
+                throw new NullReferenceException("The first matrix is null");
+            }
+
+            if (ReferenceEquals(null, b))
+            {
+                throw new NullReferenceException("The second matrix is null");
+            }
+            if (ReferenceEquals(a, b)) { return false; }
+            return !a._data.SequenceEqual(b._data) || !a.Shape.Equals(b.Shape);
         }
     }
 }

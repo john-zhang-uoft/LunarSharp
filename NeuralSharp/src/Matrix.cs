@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NeuralSharp.Matrix
+namespace NeuralSharp
 {
     public partial class Matrix
     {   
@@ -11,7 +11,8 @@ namespace NeuralSharp.Matrix
         /// </summary>
 
         private readonly float[] _data;
-        public (int rows, int cols) Shape { get; set; }
+
+        public readonly (int rows, int cols) Shape;
 
         public Matrix(int nRows, int nCols)
         {
@@ -101,6 +102,27 @@ namespace NeuralSharp.Matrix
             return new Matrix(a._data.Zip(b._data, (elemA, elemB) => elemA * elemB), a.Shape);
         }
 
+
+        public static Matrix KroneckerVectorMult(Matrix a, Matrix b)
+        {   // Kronecker product of a row vector and column vector
+
+            if (a.Shape.rows != 1 || b.Shape.cols != 1)
+            {
+                throw new InvalidOperationException(
+                    "Kronecker product is only implemented between a row vector and column vector");
+            }
+            
+            Matrix res = new Matrix(a.Shape.cols, b.Shape.rows);
+            for (int i = 0; i < a.Shape.cols; i++)
+            {
+                for (int j = 0; j < b.Shape.rows; j++)
+                {
+                    res[i, j] = a[0, i] * b[j, 0];
+                }
+            }
+
+            return res;
+        }
         
         public static Matrix HorizontalConcat(Matrix a, Matrix b)
         {   // Concatenate the matrices horizontally and returns a new matrix
@@ -129,16 +151,15 @@ namespace NeuralSharp.Matrix
         }
         
         protected bool Equals(Matrix other)
-        {
-            return Equals(_data, other._data) && Shape.Equals(other.Shape);
+        {   // Returns true if the two matrices have the same reference or the same value
+            return _data.SequenceEqual(other._data) && Shape.Equals(other.Shape);
         }
 
         public override bool Equals(object obj)
-        {
+        {   // Returns true if the two matrices have the same reference or same value
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Matrix) obj);
+            return obj.GetType() == this.GetType() && Equals((Matrix) obj);
         }
 
         public override int GetHashCode()

@@ -1,11 +1,9 @@
-﻿using NeuralSharp;
-using System.Diagnostics;
-
-namespace NeuralSharp.Tests
+﻿using System.Diagnostics;
+namespace NeuralSharp
 {
-    public class MatrixTests
+    public class Program
     {
-        int RunTests(string[] args)
+        public static int Main()
         {
             Matrix a = new Matrix(5, 10);
             Matrix b = new Matrix(5, 10);
