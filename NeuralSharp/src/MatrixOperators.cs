@@ -9,7 +9,7 @@ namespace NeuralSharp
         
         public static Matrix operator -(Matrix a)
         {
-            return new Matrix(a._data.Select(i => -i), a.Shape);
+            return new Matrix(a.Data.Select(i => -i), a.Shape);
         }
 
         public static Matrix operator +(Matrix a)
@@ -24,7 +24,7 @@ namespace NeuralSharp
                 throw new InvalidOperationException("Cannot add two matrices with different shape");
             }
 
-            return new Matrix(a._data.Zip(b._data, (elemA, elemB) => elemA + elemB), a.Shape);
+            return new Matrix(a.Data.Zip(b.Data, (elemA, elemB) => elemA + elemB), a.Shape);
         }
 
         public static Matrix operator -(Matrix a, Matrix b)
@@ -34,37 +34,37 @@ namespace NeuralSharp
                 throw new InvalidOperationException("Cannot subtract two matrices with different shape");
             }
 
-            return new Matrix(a._data.Zip(b._data, (elemA, elemB) => elemA - elemB), a.Shape);
+            return new Matrix(a.Data.Zip(b.Data, (elemA, elemB) => elemA - elemB), a.Shape);
         }
 
         public static Matrix operator *(Matrix a, int b)
         {
-            return new Matrix(a._data.Select(i => i * b), a.Shape);
+            return new Matrix(a.Data.Select(i => i * b), a.Shape);
         }
 
         public static Matrix operator *(Matrix a, float b)
         {
-            return new Matrix(a._data.Select(i => i * b), a.Shape);
+            return new Matrix(a.Data.Select(i => i * b), a.Shape);
         }
 
         public static Matrix operator /(Matrix a, int b)
         {
-            return new Matrix(a._data.Select(i => i / b), a.Shape);
+            return new Matrix(a.Data.Select(i => i / b), a.Shape);
         }
 
         public static Matrix operator /(Matrix a, float b)
         {
-            return new Matrix(a._data.Select(i => i / b), a.Shape);
+            return new Matrix(a.Data.Select(i => i / b), a.Shape);
         }
 
         public static Matrix operator *(int b, Matrix a)
         {
-            return new Matrix(a._data.Select(i => i * b), a.Shape);
+            return new Matrix(a.Data.Select(i => i * b), a.Shape);
         }
 
         public static Matrix operator *(float b, Matrix a)
         {
-            return new Matrix(a._data.Select(i => i * b), a.Shape);
+            return new Matrix(a.Data.Select(i => i * b), a.Shape);
         }
 
         public static bool operator ==(Matrix a, Matrix b)
@@ -79,7 +79,7 @@ namespace NeuralSharp
                 throw new NullReferenceException("The second matrix is null");
             }
             if (ReferenceEquals(a, b)) { return true; }
-            return a._data.SequenceEqual(b._data) && a.Shape.Equals(b.Shape);
+            return a.Data.SequenceEqual(b.Data) && a.Shape.Equals(b.Shape);
         }
 
         public static bool operator !=(Matrix a, Matrix b)
@@ -94,7 +94,7 @@ namespace NeuralSharp
                 throw new NullReferenceException("The second matrix is null");
             }
             if (ReferenceEquals(a, b)) { return false; }
-            return !a._data.SequenceEqual(b._data) || !a.Shape.Equals(b.Shape);
+            return !a.Data.SequenceEqual(b.Data) || !a.Shape.Equals(b.Shape);
         }
     }
 }

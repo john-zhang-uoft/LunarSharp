@@ -2,20 +2,18 @@
 
 namespace NeuralSharp
 {
-    public class Weights
+    public abstract class Layer
     {
-        public static Matrix RandomizeWeights(float maxWeight, int rows, int cols)
-        {   // Creates a matrix with random elements between -maxWeight and maxWeight
-            
-            float[] data = new float[rows * cols];
-
-            Random randObj = new Random();
-            
-            for (int i = 0; i < rows * cols; i++)
-            {
-                data[i] = (float) (maxWeight * (randObj.NextDouble() * 2 - 1));
-            }
-            return new Matrix((rows, cols), data);
+        protected Matrix Neurons;
+        protected readonly (int, int, int) InputShape;
+        protected readonly (int, int, int) OutputShape;
+        protected Layer((int, int, int) inputShape, (int, int, int) outputShape)
+        {
+            InputShape = inputShape;
+            OutputShape = outputShape;
         }
+        public abstract void Update();
+        public abstract Matrix FeedForward(Matrix inputs);
+        public abstract Matrix BackPropagate(Matrix inputs);
     }
 }

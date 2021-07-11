@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace NeuralSharp
@@ -10,48 +11,79 @@ namespace NeuralSharp
         /// The matrix class is implemented as 1D arrays for better performance compared to 2D arrays
         /// </summary>
 
-        private readonly float[] _data;
+        public readonly float[] Data;
 
         public readonly (int rows, int cols) Shape;
 
         public Matrix(int nRows, int nCols)
         {
-            _data = new float[nRows * nCols];
+            Data = new float[nRows * nCols];
             Shape = (nRows, nCols);
+        }
+
+        public Matrix((int nRows, int nCols) shape)
+        {
+            Data = new float[shape.nRows * shape.nCols];
+            Shape = shape;
         }
 
         public Matrix(Matrix a)
         {
-            _data = a._data;
+            if (a.Data.Length != a.Shape.rows * a.Shape.cols)
+            {
+                throw new InvalidDataException("Matrix shape does not match element data");
+            }
+            Data = a.Data;
             Shape = a.Shape;
         }
 
         public Matrix((int rows, int cols) shape, params float[] data)
         {
-            _data = data;
+            if (data.Length != shape.rows * shape.cols)
+            {
+                throw new InvalidDataException("Matrix shape does not match element data");
+            }
+            
+            Data = data;
             Shape = shape;
         }
         public Matrix(float[] data, (int rows, int cols) shape)
         {
-            _data = data;
+            if (data.Length != shape.rows * shape.cols)
+            {
+                throw new InvalidDataException("Matrix shape does not match element data");
+            }
+            
+            Data = data;
             Shape = shape;
         }
 
         public Matrix(IEnumerable<float> data, (int rows, int cols) shape)
         {
-            _data = data.ToArray();
+            Data = data.ToArray();
+
+            if (Data.Length != shape.rows * shape.cols)
+            {
+                throw new InvalidDataException("Matrix shape does not match element data");
+            }
+            
             Shape = shape;
         }
 
         public float this[int i, int j]
         {
-            get => _data[i * Shape.cols + j];
-            private set => _data[i * Shape.cols + j] = value;
+            get => Data[i * Shape.cols + j];
+            private set => Data[i * Shape.cols + j] = value;
         }
 
+        public Matrix ApplyToElements(Func<float, float> expression)
+        {
+            return new Matrix(Data.Select(expression), Shape);
+        }
+        
         public Matrix Transpose()
         {   // Returns a copied version of the transposed matrix
-            Matrix temp = new Matrix(Shape.cols, Shape.rows);
+            Matrix temp = new Matrix(Shape);
 
             for (int i = 0; i < Shape.rows; i++)
             {
@@ -99,7 +131,7 @@ namespace NeuralSharp
             {
                 throw new InvalidOperationException("Matrices must be the same size for element-wise multiplication");
             }
-            return new Matrix(a._data.Zip(b._data, (elemA, elemB) => elemA * elemB), a.Shape);
+            return new Matrix(a.Data.Zip(b.Data, (elemA, elemB) => elemA * elemB), a.Shape);
         }
 
 
@@ -152,7 +184,7 @@ namespace NeuralSharp
         
         protected bool Equals(Matrix other)
         {   // Returns true if the two matrices have the same reference or the same value
-            return _data.SequenceEqual(other._data) && Shape.Equals(other.Shape);
+            return Data.SequenceEqual(other.Data) && Shape.Equals(other.Shape);
         }
 
         public override bool Equals(object obj)
@@ -164,7 +196,7 @@ namespace NeuralSharp
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(_data, Shape);
+            return HashCode.Combine(Data, Shape);
         }
     }
 }
