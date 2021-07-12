@@ -9,7 +9,7 @@ namespace NeuralSharp
         ReLU,
     }
     
-    public class Activations
+    public static class Activations
     {
         public static float Sigmoid(float x)
         {

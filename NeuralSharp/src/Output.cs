@@ -15,7 +15,10 @@ namespace NeuralSharp
             return output.Data.Zip(target.Data,
                 (outputElem, targetElem) => (outputElem - targetElem) * (outputElem - targetElem)).Sum();
         }
-        
-        
+
+        public static float Accuracy(Matrix output, Matrix target)
+        {
+            return 0;
+        }
     }
 }

@@ -9,21 +9,14 @@ namespace NeuralSharp
         private Matrix Weights;
         private Matrix Biases;
         private ActivationFunctions ActivationFunction;
-
-        public Dense(int inputShape, int outputShape, ActivationFunctions activation) : base((inputShape, 1, 1), (outputShape, 1, 1))
+        private Matrix Gradient;
+        
+        public Dense(int inputShape, int outputShape, ActivationFunctions activation) : base((inputShape, 1, 1),
+            (outputShape, 1, 1))
         {
             ActivationFunction = activation;
             Weights = RandomMatrix(1, inputShape, inputShape);
             Biases = RandomMatrix(1, inputShape, 1);
-        }
-
-        public Dense((int, int) inputShape, (int, int) outputShape) : base((inputShape.Item1, inputShape.Item2, 1),
-            (outputShape.Item1, outputShape.Item2, 1))
-        {
-        }
-
-        public Dense((int, int, int) inputShape, (int, int, int) outputShape) : base(inputShape, outputShape)
-        {
         }
 
         public override Matrix FeedForward(Matrix inputs)
@@ -62,7 +55,7 @@ namespace NeuralSharp
 
             Random randObj = new Random();
 
-            for (int i = 0; i < rows * cols; i++)
+            for (int i = 0; i < data.Length; i++)
             {
                 data[i] = (float) (maxWeight * (randObj.NextDouble() * 2 - 1));
             }
