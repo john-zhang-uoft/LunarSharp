@@ -6,11 +6,6 @@ namespace NeuralSharp
 {
     public class Dense : Layer
     {
-        private Matrix Weights;
-        private Matrix Biases;
-        private ActivationFunctions ActivationFunction;
-        private Matrix Gradient;
-        
         public Dense(int inputShape, int outputShape, ActivationFunctions activation) : base((inputShape, 1, 1),
             (outputShape, 1, 1))
         {
@@ -19,7 +14,7 @@ namespace NeuralSharp
             Biases = RandomMatrix(1, inputShape, 1);
         }
 
-        public override Matrix FeedForward(Matrix inputs)
+        public override void FeedForward(Matrix inputs)
         {
             if (inputs.Shape != (InputShape.Item1, InputShape.Item2))
             {
@@ -27,7 +22,7 @@ namespace NeuralSharp
                     $"Matrix shape is {inputs.Shape} while dense layer has input shape {InputShape}");
             }
 
-            return ActivationFunction switch
+            Neurons = ActivationFunction switch
             {
                 ActivationFunctions.Sigmoid => (Weights * inputs + Biases).ApplyToElements(Activations.Sigmoid),
                 ActivationFunctions.Tanh => (Weights * inputs + Biases).ApplyToElements(Activations.Tanh),
@@ -35,18 +30,50 @@ namespace NeuralSharp
                 _ => throw new InvalidOperationException("Unimplemented Activation Function")
             };
         }
-
-        public override void Update()
+        
+        public override void BackPropagate(Layer nextLayer, Matrix target, float alpha, float gamma)
         {
-            throw new NotImplementedException();
+            SetGradient(nextLayer, target);
+            Weights -= alpha * Gradient;
+            Biases -= gamma * Gradient;
         }
 
-        public override Matrix BackPropagate(Matrix inputs)
+        private void SetGradient(Layer nextLayer, Matrix target)
         {
-            throw new NotImplementedException();
+            if (nextLayer == null)
+            {
+                Gradient = ActivationFunction switch
+                {
+                    ActivationFunctions.Sigmoid => Output.DMeanSquaredError(Neurons, target)
+                        .HadamardMult(Neurons.ApplyToElements(Activations.DSigmoid)),
+
+                    ActivationFunctions.Tanh => Output.DMeanSquaredError(Neurons, target)
+                        .HadamardMult(Neurons.ApplyToElements(Activations.Tanh)),
+
+                    ActivationFunctions.ReLU => Output.DMeanSquaredError(Neurons, target)
+                        .HadamardMult(Neurons.ApplyToElements(Activations.ReLU)),
+                    
+                    _ => throw new InvalidOperationException("Unimplemented activation function")
+                };
+                return;
+            }
+
+            Gradient = ActivationFunction switch
+            {
+                ActivationFunctions.Sigmoid => (nextLayer.Weights.Transpose() * nextLayer.Gradient)
+                    .HadamardMult(Neurons.ApplyToElements(Activations.DSigmoid)),
+
+                ActivationFunctions.Tanh => (nextLayer.Weights.Transpose() * nextLayer.Gradient)
+                    .HadamardMult(Neurons.ApplyToElements(Activations.Tanh)),
+
+                ActivationFunctions.ReLU => (nextLayer.Weights.Transpose() * nextLayer.Gradient)
+                    .HadamardMult(Neurons.ApplyToElements(Activations.ReLU)),
+
+                _ => throw new InvalidOperationException("Unimplemented activation function")
+            };
         }
-
-
+        
+        
         public static Matrix RandomMatrix(float maxWeight, int rows, int cols)
         {
             // Creates a matrix with random elements between -maxWeight and maxWeight

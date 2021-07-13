@@ -133,8 +133,16 @@ namespace NeuralSharp
             }
             return new Matrix(a.Data.Zip(b.Data, (elemA, elemB) => elemA * elemB), a.Shape);
         }
-
-
+        
+        public Matrix HadamardMult(Matrix b)
+        {   // Element-wise multiplication
+            if (Shape != b.Shape)
+            {
+                throw new InvalidOperationException("Matrices must be the same size for element-wise multiplication");
+            }
+            return new Matrix(Data.Zip(b.Data, (elemA, elemB) => elemA * elemB), Shape);
+        }
+        
         public static Matrix KroneckerVectorMult(Matrix a, Matrix b)
         {   // Kronecker product of a row vector and column vector
 
