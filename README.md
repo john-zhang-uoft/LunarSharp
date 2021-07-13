@@ -7,4 +7,4 @@ Plans:
 1. Implement convolution
 2. Implement dropout
 3. Add optimizers
-4. Implement atomatic hyperparameter tuning
+4. Implement automatic hyperparameter tuning
