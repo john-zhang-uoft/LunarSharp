@@ -31,13 +31,24 @@ namespace NeuralSharp
             };
         }
         
-        public override void BackPropagate(Layer nextLayer, Matrix target, float alpha, float gamma)
+        public override void BackPropagate(Layer nextLayer, Layer lastLayer, Matrix target, float alpha, float gamma)
         {
             SetGradient(nextLayer, target);
-            Weights -= alpha * Gradient;
+            if (lastLayer != null)
+                UpdateWeights(alpha, lastLayer);
             Biases -= gamma * Gradient;
         }
 
+        private void UpdateWeights(float alpha, Layer lastLayer)
+        {
+            Weights -= alpha * Matrix.KroneckerVectorMult(lastLayer.Neurons.Transpose(), Gradient).Transpose();
+        }
+
+        private void UpdateBiases(float gamma)
+        {
+            
+        }
+        
         private void SetGradient(Layer nextLayer, Matrix target)
         {
             if (nextLayer == null)

@@ -83,7 +83,7 @@ namespace NeuralSharp
         
         public Matrix Transpose()
         {   // Returns a copied version of the transposed matrix
-            Matrix temp = new Matrix(Shape);
+            Matrix temp = new Matrix(Shape.cols, Shape.rows);
 
             for (int i = 0; i < Shape.rows; i++)
             {

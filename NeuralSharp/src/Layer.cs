@@ -4,7 +4,7 @@ namespace NeuralSharp
 {
     public abstract class Layer
     {
-        protected Matrix Neurons;
+        public Matrix Neurons { get; protected set; }
         protected readonly (int, int, int) InputShape;
         protected readonly (int, int, int) OutputShape;
 
@@ -21,7 +21,7 @@ namespace NeuralSharp
         }
 
         public abstract void FeedForward(Matrix inputs);
-        public abstract void BackPropagate(Layer nextLayer, Matrix target, float alpha, float gamma);
+        public abstract void BackPropagate(Layer nextLayer, Layer lastLayer, Matrix target, float alpha, float gamma);
         
     }
 }
