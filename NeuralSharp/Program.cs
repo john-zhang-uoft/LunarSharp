@@ -9,8 +9,8 @@ namespace NeuralSharp
         static void Main(string[] args)
         {
             Model test = new Model(
-                new Dense(2, 2, ActivationFunctions.Sigmoid),
-                new Dense(2, 2, ActivationFunctions.Sigmoid)
+                new Dense(2, ActivationFunctions.Sigmoid),
+                new Dense(2, ActivationFunctions.Sigmoid)
             );
 
             for (int i = 0; i < 10000; i++)
@@ -19,7 +19,7 @@ namespace NeuralSharp
                 test.Layers[0].FeedForward(new Matrix(shape: (2, 1), 1, 1));
                 test.Layers[1].FeedForward(test.Layers[0].Neurons);
                 
-                test.Layers[1].BackPropagate(null, test.Layers[1], new Matrix((2, 1), 2, 2), 0.01f, 0.01f);
+                test.Layers[1].BackPropagate(null, test.Layers[1].Neurons, new Matrix((2, 1), 2, 2), 0.01f, 0.01f);
                 test.Layers[0].BackPropagate(test.Layers[1], null, new Matrix((2, 1), 2, 2), 0.01f, 0.01f);
 
                 Console.WriteLine(Output.MeanSquaredError(test.Layers[1].Neurons, new Matrix((2, 1), 2, 2)));

@@ -7,6 +7,7 @@ namespace NeuralSharp
         Sigmoid,
         Tanh,
         ReLU,
+        None
     }
     
     public static class Activations

@@ -6,11 +6,10 @@ using System.Linq;
 namespace NeuralSharp
 {
     public partial class Matrix
-    {   
+    {
         /// <summary>
         /// The matrix class is implemented as 1D arrays for better performance compared to 2D arrays
         /// </summary>
-
         public readonly float[] Data;
 
         public readonly (int rows, int cols) Shape;
@@ -33,6 +32,7 @@ namespace NeuralSharp
             {
                 throw new InvalidDataException("Matrix shape does not match element data");
             }
+
             Data = a.Data;
             Shape = a.Shape;
         }
@@ -43,17 +43,18 @@ namespace NeuralSharp
             {
                 throw new InvalidDataException("Matrix shape does not match element data");
             }
-            
+
             Data = data;
             Shape = shape;
         }
+
         public Matrix(float[] data, (int rows, int cols) shape)
         {
             if (data.Length != shape.rows * shape.cols)
             {
                 throw new InvalidDataException("Matrix shape does not match element data");
             }
-            
+
             Data = data;
             Shape = shape;
         }
@@ -66,7 +67,7 @@ namespace NeuralSharp
             {
                 throw new InvalidDataException("Matrix shape does not match element data");
             }
-            
+
             Shape = shape;
         }
 
@@ -80,9 +81,10 @@ namespace NeuralSharp
         {
             return new Matrix(Data.Select(expression), Shape);
         }
-        
+
         public Matrix Transpose()
-        {   // Returns a copied version of the transposed matrix
+        {
+            // Returns a copied version of the transposed matrix
             Matrix temp = new Matrix(Shape.cols, Shape.rows);
 
             for (int i = 0; i < Shape.rows; i++)
@@ -97,9 +99,10 @@ namespace NeuralSharp
         }
 
         // Matrix Multiplications
-        
+
         public static Matrix operator *(Matrix a, Matrix b)
-        {   // Regular matrix multiplication
+        {
+            // Regular matrix multiplication
             if (a.Shape.cols != b.Shape.rows)
             {
                 throw new InvalidOperationException("Invalid matrix shapes, cannot perform matrix multiplication");
@@ -121,31 +124,45 @@ namespace NeuralSharp
                     res[i, j] = dotProduct;
                 }
             }
+
             return res;
         }
 
-        
+
         public static Matrix HadamardMult(Matrix a, Matrix b)
-        {   // Element-wise multiplication
+        {
+            // Element-wise multiplication
             if (a.Shape != b.Shape)
             {
                 throw new InvalidOperationException("Matrices must be the same size for element-wise multiplication");
             }
+
             return new Matrix(a.Data.Zip(b.Data, (elemA, elemB) => elemA * elemB), a.Shape);
         }
-        
+
         public Matrix HadamardMult(Matrix b)
-        {   // Element-wise multiplication
+        {
+            // Element-wise multiplication
             if (Shape != b.Shape)
             {
                 throw new InvalidOperationException("Matrices must be the same size for element-wise multiplication");
             }
+
             return new Matrix(Data.Zip(b.Data, (elemA, elemB) => elemA * elemB), Shape);
         }
-        
-        public static Matrix KroneckerVectorMult(Matrix a, Matrix b)
-        {   // Kronecker product of a row vector and column vector
 
+        /// <summary>
+        /// Returns the Kronecker product of a row vector "a" and column vector "b".
+        /// The i-th row of the resulting matrix is the i-th element of "a" multiplied by "b" transpose.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>Matrix with shape i x j where i is the number of cols of matrix "a" and j is the number of rows of matrix "b"
+        /// </returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static Matrix KroneckerVectorMult(Matrix a, Matrix b)
+        {
+            // Check whether a is a row vector and b a column vector
             if (a.Shape.rows != 1 || b.Shape.cols != 1)
             {
                 throw new InvalidOperationException(
@@ -163,16 +180,38 @@ namespace NeuralSharp
 
             return res;
         }
-        
+
+        public Matrix KroneckerVectorMult(Matrix b)
+        {
+            // Kronecker product of a row vector and column vector
+            if (Shape.rows != 1 || b.Shape.cols != 1)
+            {
+                throw new InvalidOperationException(
+                    "Kronecker product is only implemented between a row vector and column vector");
+            }
+
+            Matrix res = new Matrix(Shape.cols, b.Shape.rows);
+            for (int i = 0; i < Shape.cols; i++)
+            {
+                for (int j = 0; j < b.Shape.rows; j++)
+                {
+                    res[i, j] = this[0, i] * b[j, 0];
+                }
+            }
+
+            return res;
+        }
+
         public static Matrix HorizontalConcat(Matrix a, Matrix b)
-        {   // Concatenate the matrices horizontally and returns a new matrix
+        {
+            // Concatenate the matrices horizontally and returns a new matrix
             if (a.Shape.rows != b.Shape.rows)
             {
                 throw new InvalidOperationException("Matrices must have the same number of rows");
             }
 
             Matrix res = new Matrix(a.Shape.rows, a.Shape.cols + b.Shape.cols);
-            
+
             // For each row
             for (int i = 0; i < a.Shape.rows; i++)
             {
@@ -181,22 +220,42 @@ namespace NeuralSharp
                 {
                     res[i, j] = a[i, j];
                 }
+
                 // Add the elements of that row of the second matrix
                 for (int k = 0; k < b.Shape.cols; k++)
                 {
                     res[i, a.Shape.cols + k] = b[i, k];
                 }
             }
+
             return res;
+        }
+
+        public static Matrix RandomMatrix(float maxWeight, int rows, int cols)
+        {
+            // Creates a matrix with random elements between -maxWeight and maxWeight
+
+            float[] data = new float[rows * cols];
+
+            Random randObj = new Random();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = (float) (maxWeight * (randObj.NextDouble() * 2 - 1));
+            }
+
+            return new Matrix((rows, cols), data);
         }
         
         protected bool Equals(Matrix other)
-        {   // Returns true if the two matrices have the same reference or the same value
+        {
+            // Returns true if the two matrices have the same reference or the same value
             return Data.SequenceEqual(other.Data) && Shape.Equals(other.Shape);
         }
 
         public override bool Equals(object obj)
-        {   // Returns true if the two matrices have the same reference or same value
+        {
+            // Returns true if the two matrices have the same reference or same value
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == this.GetType() && Equals((Matrix) obj);
