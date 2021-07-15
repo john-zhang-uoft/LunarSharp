@@ -3,6 +3,12 @@ using System.Linq;
 
 namespace NeuralSharp
 {
+    public enum Loss
+    {
+        MeanSquareDError,
+        
+    }
+    
     public class Output
     {
         public static float MeanSquaredError(Matrix output, Matrix target)

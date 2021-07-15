@@ -15,7 +15,7 @@ namespace NeuralSharp
             ActivationFunction = activation;
         }
         
-        public Dense(int shape, int inputShape, ActivationFunctions activation = ActivationFunctions.None) : base()
+        public Dense(int inputShape, int shape, ActivationFunctions activation = ActivationFunctions.None) : base()
         {
             OutputShape = (shape, 1, 1);
             InputShape = (inputShape, 1, 1);
