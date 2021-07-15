@@ -14,10 +14,14 @@ namespace NeuralSharp
         {
             Layers = new List<Layer>(layers);
 
-            for (int i = Layers.Count - 1; i >= 0; i--)
+            for (int i = Layers.Count - 1; i > 0; i--)
             {
                 Layers[i].Connect(Layers[i - 1]);
-            } 
+                Layers[i].InitializeRandomWeights(1);
+                Layers[i].InitializeRandomBiases(1);
+            }
+            Layers[0].InitializeRandomWeights(1);
+            Layers[0].InitializeRandomBiases(1);
         }
 
         /// <summary>

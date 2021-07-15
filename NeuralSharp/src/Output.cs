@@ -23,7 +23,7 @@ namespace NeuralSharp
                 throw new InvalidOperationException(
                     "Matrices must be the same size for calculating mean squared error derivative");
             }
-
+            
             return 2 * (output - target);
         }
         
