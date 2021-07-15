@@ -81,10 +81,10 @@ namespace NeuralSharp
                         .HadamardMult(Neurons.ApplyToElements(Activations.DSigmoid)),
 
                     ActivationFunctions.Tanh => Output.DMeanSquaredError(Neurons, target)
-                        .HadamardMult(Neurons.ApplyToElements(Activations.Tanh)),
+                        .HadamardMult(Neurons.ApplyToElements(Activations.DTanh)),
 
                     ActivationFunctions.ReLU => Output.DMeanSquaredError(Neurons, target)
-                        .HadamardMult(Neurons.ApplyToElements(Activations.ReLU)),
+                        .HadamardMult(Neurons.ApplyToElements(Activations.DReLU)),
                     
                     ActivationFunctions.None => Output.DMeanSquaredError(Neurons, target)
                         .HadamardMult(Neurons),
@@ -100,10 +100,10 @@ namespace NeuralSharp
                     .HadamardMult(Neurons.ApplyToElements(Activations.DSigmoid)),
 
                 ActivationFunctions.Tanh => (nextLayer.Weights.Transpose() * nextLayer.Gradient)
-                    .HadamardMult(Neurons.ApplyToElements(Activations.Tanh)),
+                    .HadamardMult(Neurons.ApplyToElements(Activations.DTanh)),
 
                 ActivationFunctions.ReLU => (nextLayer.Weights.Transpose() * nextLayer.Gradient)
-                    .HadamardMult(Neurons.ApplyToElements(Activations.ReLU)),
+                    .HadamardMult(Neurons.ApplyToElements(Activations.DReLU)),
                 
                 ActivationFunctions.None => (nextLayer.Weights.Transpose() * nextLayer.Gradient)
                     .HadamardMult(Neurons),
