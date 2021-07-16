@@ -31,24 +31,8 @@ namespace NeuralSharp
                 // For each datapoint
                 for (int i = 0; i < x.Length; i++)
                 {
-                    _layers[0].FeedForward(x[i]);
-
-                    // Feedforward result through each other layer
-                    for (int l = 1; l < _layers.Count; l++)
-                    {
-                        _layers[l].FeedForward(_layers[l - 1].Neurons);
-                    }
-
-                    // Back-propagate error
-
-                    _layers[^1].BackPropagate(null, _layers[^2].Neurons, y[i], alpha, gamma);
-
-                    for (int l = _layers.Count - 2; l >= 1; l--)
-                    {
-                        _layers[l].BackPropagate(_layers[l + 1], _layers[l - 1].Neurons, y[i], alpha, gamma);
-                    }
-                    
-                    _layers[0].BackPropagate(_layers[1], x[i], y[i], alpha, gamma);
+                    ForwardPass(x[i]);
+                    BackwardPass(x[i], y[i], alpha, gamma);
                 }
                 
                 float trainLoss = 0;
@@ -58,13 +42,7 @@ namespace NeuralSharp
 
                         for (int i = 0; i < x.Length; i++)
                         {
-                            _layers[0].FeedForward(x[i]);
-
-                            // Feedforward result through each other layer
-                            for (int l = 1; l < _layers.Count; l++)
-                            {
-                                _layers[l].FeedForward(_layers[l - 1].Neurons);
-                            }
+                            Predict(x[i]);
                             
                             trainLoss += Output.MeanSquaredError(_layers[^1].Neurons, y[i]);
                         }
