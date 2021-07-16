@@ -140,7 +140,14 @@ namespace NeuralSharp
 
         public Matrix Predict(Matrix input)
         {
-            throw new NotImplementedException();
-        }
+            Layers[0].FeedForward(input);
+
+            // Feedforward result through each other layer
+            for (int l = 1; l < Layers.Count; l++)
+            {
+                Layers[l].FeedForward(Layers[l - 1].Neurons);
+            }
+
+            return Layers[^1].Neurons;        }
     }
 }

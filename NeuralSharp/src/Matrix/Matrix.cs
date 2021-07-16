@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace NeuralSharp
 {
@@ -247,7 +248,34 @@ namespace NeuralSharp
             return new Matrix((rows, cols), data);
         }
         
-        protected bool Equals(Matrix other)
+        public override string ToString()
+        {
+            StringBuilder str = new StringBuilder();
+            str.Append('[');
+
+            for (int m = 0; m < Shape.rows - 1; m++)
+            {
+                str.Append('[');
+        
+                for (int n = 0; n < Shape.cols - 1; n++)
+                {
+                    str.Append($"{this[m, n]}, ");
+                }
+                
+                str.Append($"{this[m, Shape.cols - 1]}], \n");
+            }
+
+            str.Append('[');
+            for (int n = 0; n < Shape.cols - 1; n++)
+            {
+                str.Append($"{this[Shape.rows - 1, n]}, ");
+            }
+            str.Append($"{this[Shape.rows - 1, Shape.cols - 1]}]]");
+            
+            return str.ToString();
+        }
+
+        private bool Equals(Matrix other)
         {
             // Returns true if the two matrices have the same reference or the same value
             return Data.SequenceEqual(other.Data) && Shape.Equals(other.Shape);
