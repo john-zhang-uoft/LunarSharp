@@ -61,6 +61,26 @@ namespace NeuralSharp
         {
             Biases = Matrix.RandomMatrix(range, OutputShape.Item1, 1);
         }
+
+        /// <summary>
+        /// Returns true if there are no negative values and there is at least one nonzero value in the InputShape.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsValidInputShape()
+        {
+            return (InputShape.Item1 >= 0 && InputShape.Item2 >= 0 && InputShape.Item3 >= 0)
+                    && (InputShape.Item1 > 0 || InputShape.Item2 > 0 || InputShape.Item3 > 0);
+        }
+        
+        /// <summary>
+        /// Returns true if there are no negative values and there is at least one nonzero value in the OutputShape.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsValidShape()
+        {
+            return (OutputShape.Item1 >= 0 && OutputShape.Item2 >= 0 && OutputShape.Item3 >= 0)
+                   && (OutputShape.Item1 > 0 || OutputShape.Item2 > 0 || OutputShape.Item3 > 0);        
+        }
         
     }
 }
