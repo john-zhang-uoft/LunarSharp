@@ -9,33 +9,42 @@ namespace NeuralSharp
     /// </summary>
     public class Dense : Layer
     {
-        public Dense(int shape, ActivationFunctions activation = ActivationFunctions.None) : base()
+        /// <summary>
+        /// Constructor for dense layers.
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <param name="activation"></param>
+        /// <exception cref="InvalidDataException"></exception>
+        public Dense(int shape, ActivationFunctions activation = ActivationFunctions.None) : base(
+            (shape, 1, 1), activation)
         {
             if (shape < 1)
             {
                 throw new InvalidDataException("Invalid dense layer shape");
             }
-            OutputShape = (shape, 1, 1);
-            ActivationFunction = activation;
         }
-        
-        public Dense(int inputShape, int shape, ActivationFunctions activation = ActivationFunctions.None) : base()
+
+        /// <summary>
+        /// Constructor for the dense layer if it is the first layer in the network.
+        /// </summary>
+        /// <param name="inputShape"></param>
+        /// <param name="shape"></param>
+        /// <param name="activation"></param>
+        /// <exception cref="InvalidDataException"></exception>
+        public Dense(int inputShape, int shape, ActivationFunctions activation = ActivationFunctions.None) : base(
+            (inputShape, 1, 1), (shape, 1, 1), activation)
         {
-            if (shape < 1)
+            if (inputShape < 1 || shape < 1)
             {
                 throw new InvalidDataException("Invalid dense layer shape");
             }
-
-            if (inputShape < 1)
-            {
-                throw new InvalidDataException("Invalid dense layer shape");
-            }
-            
-            OutputShape = (shape, 1, 1);
-            InputShape = (inputShape, 1, 1);
-            ActivationFunction = activation;
         }
 
+        /// <summary>
+        /// Pass a set of inputs through this dense layer and update neuron activations.
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <exception cref="InvalidDataException"></exception>
         public override void FeedForward(Matrix inputs)
         {
             if (inputs.Shape != (InputShape.Item1, InputShape.Item2))
@@ -44,17 +53,19 @@ namespace NeuralSharp
                     $"Matrix shape is {inputs.Shape} while dense layer has input shape {InputShape}");
             }
 
-            Neurons = ActivationFunction switch
-            {
-                ActivationFunctions.Sigmoid => (Weights * inputs + Biases).ApplyToElements(Activations.Sigmoid),
-                ActivationFunctions.Tanh => (Weights * inputs + Biases).ApplyToElements(Activations.Tanh),
-                ActivationFunctions.ReLU => (Weights * inputs + Biases).ApplyToElements(Activations.ReLU),
-                ActivationFunctions.None => Weights * inputs + Biases,
-                _ => throw new InvalidOperationException("Unimplemented Activation Function")
-            };
+            Neurons = (Weights * inputs + Biases).ApplyToElements(ActivationFunction);
         }
-
-        public override void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target, float alpha, float gamma)
+        
+        /// <summary>
+        /// Passes error back through this dense layer and updates weights and biases.
+        /// </summary>
+        /// <param name="nextLayer"></param>
+        /// <param name="previousLayerNeurons"></param>
+        /// <param name="target"></param>
+        /// <param name="alpha"></param>
+        /// <param name="gamma"></param>
+        public override void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target, float alpha,
+            float gamma)
         {
             SetGradient(nextLayer, target);
             UpdateWeights(alpha, previousLayerNeurons);
@@ -74,9 +85,9 @@ namespace NeuralSharp
 
             // But the element [j, i] of the weights matrix is the weight that connects the i-th input neuron
             // to the j-th neuron of this layer
-            
+
             // So we transpose the Kronecker product to match the weights
-            
+
             Weights -= alpha * Matrix.KroneckerVectorMult(lastLayerNeurons.Transpose(), Gradient).Transpose();
         }
 
@@ -89,42 +100,15 @@ namespace NeuralSharp
         {
             if (nextLayer == null)
             {
-                Gradient = ActivationFunction switch
-                {
-                    ActivationFunctions.Sigmoid => Output.DMeanSquaredError(Neurons, target)
-                        .HadamardMult(Neurons.ApplyToElements(Activations.DSigmoid)),
-
-                    ActivationFunctions.Tanh => Output.DMeanSquaredError(Neurons, target)
-                        .HadamardMult(Neurons.ApplyToElements(Activations.DTanh)),
-
-                    ActivationFunctions.ReLU => Output.DMeanSquaredError(Neurons, target)
-                        .HadamardMult(Neurons.ApplyToElements(Activations.DReLU)),
-                    
-                    ActivationFunctions.None => Output.DMeanSquaredError(Neurons, target)
-                        .HadamardMult(Neurons),
-
-                    _ => throw new InvalidOperationException("Unimplemented activation function")
-                };
+                Gradient = Loss.DMeanSquaredError(Neurons, target)
+                    .HadamardMult(Neurons.ApplyToElements(ActivationFunction));
                 return;
             }
-
-            Gradient = ActivationFunction switch
+            else
             {
-                ActivationFunctions.Sigmoid => (nextLayer.Weights.Transpose() * nextLayer.Gradient)
-                    .HadamardMult(Neurons.ApplyToElements(Activations.DSigmoid)),
-
-                ActivationFunctions.Tanh => (nextLayer.Weights.Transpose() * nextLayer.Gradient)
-                    .HadamardMult(Neurons.ApplyToElements(Activations.DTanh)),
-
-                ActivationFunctions.ReLU => (nextLayer.Weights.Transpose() * nextLayer.Gradient)
-                    .HadamardMult(Neurons.ApplyToElements(Activations.DReLU)),
-                
-                ActivationFunctions.None => (nextLayer.Weights.Transpose() * nextLayer.Gradient)
-                    .HadamardMult(Neurons),
-
-                _ => throw new InvalidOperationException("Unimplemented activation function")
-            };
+                Gradient = (nextLayer.Weights.Transpose() * nextLayer.Gradient).HadamardMult(
+                    Neurons.ApplyToElements(ActivationFunction));
+            }
         }
-        
     }
 }

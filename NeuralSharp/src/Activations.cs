@@ -9,14 +9,14 @@ namespace NeuralSharp
         ReLU,
         None
     }
-    
+
     public static class Activations
     {
         public static float Sigmoid(float x)
         {
             return (float) (1 / (1 + Math.Exp(-x)));
         }
-        
+
         public static float DSigmoid(float x)
         {
             return Sigmoid(x) * (1 - Sigmoid(x));
@@ -41,6 +41,15 @@ namespace NeuralSharp
         {
             return (x > 0) ? 1 : 0;
         }
-        
+
+        public static float None(float x)
+        {
+            return x;
+        }
+
+        public static float DNone(float x)
+        {
+            return 1;
+        }
     }
 }

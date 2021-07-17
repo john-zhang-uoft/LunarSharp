@@ -10,43 +10,71 @@ namespace NeuralSharp
         public Matrix Neurons { get; protected set; }
         protected (int, int, int) InputShape;
         protected (int, int, int) OutputShape;
-        
+
         /// <summary>
         /// Has i rows and j columns, where i is the number of neurons in this layer
         /// and j is the number of neurons in the previous layer.
         /// The [i, j]-th element is the weight between the j-th input neuron to the i-th neuron of this layer.
         /// </summary>
         public Matrix Weights { get; protected set; }
-        
+
         /// <summary>
         /// Has i rows, where i is the number of neurons in this layer.
         /// </summary>
         public Matrix Biases { get; protected set; }
-        
+
         /// <summary>
         /// Applied to each neuron in the layer to finish calculating the brightness of each neuron.
         /// </summary>
-        public ActivationFunctions ActivationFunction { get; protected set; }
+        protected Func<float, float> ActivationFunction { get; }
 
         /// <summary>
         /// Stores the gradient of the cost function with respect to each neuron for backpropagation
         /// </summary>
         public Matrix Gradient { get; protected set; }
 
-        
+
         #region Constructors
 
-        protected Layer() {}    // Empty constructor for inheritance
-        protected Layer((int, int, int) outputShape)
+        protected Layer()
+        {
+        } // Empty constructor for inheritance
+
+        protected Layer((int, int, int) outputShape, ActivationFunctions activation)
         {
             OutputShape = outputShape;
+            ActivationFunction = activation switch
+            {
+                ActivationFunctions.Sigmoid => Activations.Sigmoid,
+                ActivationFunctions.Tanh => Activations.Tanh,
+                ActivationFunctions.ReLU => Activations.ReLU,
+                ActivationFunctions.None => Activations.None,
+                _ => throw new InvalidOperationException("Unimplemented Activation Function")
+            };
         }
 
+        protected Layer((int, int, int) inputShape, (int, int, int) outputShape, ActivationFunctions activation)
+        {
+            InputShape = inputShape;
+            OutputShape = outputShape;
+            ActivationFunction = activation switch
+            {
+                ActivationFunctions.Sigmoid => Activations.Sigmoid,
+                ActivationFunctions.Tanh => Activations.Tanh,
+                ActivationFunctions.ReLU => Activations.ReLU,
+                ActivationFunctions.None => Activations.None,
+                _ => throw new InvalidOperationException("Unimplemented Activation Function")
+            };
+        }
+        
         #endregion
 
 
         public abstract void FeedForward(Matrix inputs);
-        public abstract void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target, float alpha, float gamma);
+
+        public abstract void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target, float alpha,
+            float gamma);
+
         public void Connect(Layer previousLayer)
         {
             InputShape = previousLayer.OutputShape;
@@ -70,15 +98,14 @@ namespace NeuralSharp
         {
             return InputShape.Item1 >= 1 && InputShape.Item2 >= 1 && InputShape.Item3 >= 1;
         }
-        
+
         /// <summary>
         /// Returns true if there are no negative or zero values in the OutputShape.
         /// </summary>
         /// <returns></returns>
         public bool IsValidShape()
         {
-            return OutputShape.Item1 >= 1 && OutputShape.Item2 >= 1 && OutputShape.Item3 >= 1;        
+            return OutputShape.Item1 >= 1 && OutputShape.Item2 >= 1 && OutputShape.Item3 >= 1;
         }
-        
     }
 }

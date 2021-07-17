@@ -9,7 +9,7 @@ namespace NeuralSharp
     public partial class Model
     {
         private List<Layer> _layers;
-        private Loss _lossFunction;
+        private LossFunctions _lossFunctionsFunction;
 
         public Model(params Layer[] layers)
         {
@@ -59,20 +59,20 @@ namespace NeuralSharp
         /// <param name="alpha"></param>
         /// <param name="gamma"></param>
         private void BackwardPass(Matrix input, Matrix target, float alpha, float gamma)
-        {   
+        {
             // Backpropagation algorithm to calculate gradient with respect to neurons
             // then with respect to weights and biases and adjust parameters
-            
+
             _layers[^1].BackPropagate(null, _layers[^2].Neurons, target, alpha, gamma);
 
             for (int l = _layers.Count - 2; l >= 1; l--)
             {
                 _layers[l].BackPropagate(_layers[l + 1], _layers[l - 1].Neurons, target, alpha, gamma);
             }
-                    
+
             _layers[0].BackPropagate(_layers[1], input, target, alpha, gamma);
         }
-        
+
         public void Save(string filePath)
         {
         }
@@ -81,7 +81,7 @@ namespace NeuralSharp
         {
             ForwardPass(input);
 
-            return _layers[^1].Neurons;        
+            return _layers[^1].Neurons;
         }
     }
 }

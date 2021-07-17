@@ -34,26 +34,27 @@ namespace NeuralSharp
                     ForwardPass(x[i]);
                     BackwardPass(x[i], y[i], alpha, gamma);
                 }
-                
+
                 float trainLoss = 0;
-                switch (_lossFunction)
+                switch (_lossFunctionsFunction)
                 {
-                    case Loss.MeanSquareDError:
+                    case LossFunctions.MeanSquareDError:
 
                         for (int i = 0; i < x.Length; i++)
                         {
                             Predict(x[i]);
-                            
-                            trainLoss += Output.MeanSquaredError(_layers[^1].Neurons, y[i]);
+
+                            trainLoss += Loss.MeanSquaredError(_layers[^1].Neurons, y[i]);
                         }
+
                         break;
-                    
+
                     default:
                         throw new NotImplementedException("Unimplemented loss function");
                 }
+
                 Console.WriteLine($"Train loss = {trainLoss}");
             }
         }
-
     }
 }

@@ -3,19 +3,19 @@ using System.Linq;
 
 namespace NeuralSharp
 {
-    public enum Loss
+    public enum LossFunctions
     {
         MeanSquareDError,
-        
     }
-    
-    public class Output
+
+    public static class Loss
     {
         public static float MeanSquaredError(Matrix output, Matrix target)
         {
             if (output.Shape != target.Shape)
             {
-                throw new InvalidOperationException("Matrices must be the same size for calculating mean squared error");
+                throw new InvalidOperationException(
+                    "Matrices must be the same size for calculating mean squared error");
             }
 
             return output.Data.Zip(target.Data,
@@ -23,17 +23,18 @@ namespace NeuralSharp
         }
 
         public static Matrix DMeanSquaredError(Matrix output, Matrix target)
-        {   // Returns a column vector containing the partial derivatives of the cost function with respect to each output neuron's brightness
+        {
+            // Returns a column vector containing the partial derivatives of the cost function with respect to each output neuron's brightness
             if (output.Shape != target.Shape)
             {
                 throw new InvalidOperationException(
                     "Matrices must be the same size for calculating mean squared error derivative");
             }
-            
+
             return 2 * (output - target);
         }
-        
-        
+
+
         public static float Accuracy(Matrix output, Matrix target)
         {
             return 0;

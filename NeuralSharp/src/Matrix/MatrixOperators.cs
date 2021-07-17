@@ -4,9 +4,9 @@ using System.Linq;
 namespace NeuralSharp
 {
     public partial class Matrix
-    { 
+    {
         // Operator overrides
-        
+
         public static Matrix operator -(Matrix a)
         {
             return new Matrix(a.Data.Select(i => -i), a.Shape);
@@ -68,7 +68,8 @@ namespace NeuralSharp
         }
 
         public static bool operator ==(Matrix a, Matrix b)
-        {   // Returns true if the two matrices have the same reference or the same value
+        {
+            // Returns true if the two matrices have the same reference or the same value
             if (ReferenceEquals(null, a))
             {
                 throw new NullReferenceException("The first matrix is null");
@@ -78,12 +79,18 @@ namespace NeuralSharp
             {
                 throw new NullReferenceException("The second matrix is null");
             }
-            if (ReferenceEquals(a, b)) { return true; }
+
+            if (ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
             return a.Data.SequenceEqual(b.Data) && a.Shape.Equals(b.Shape);
         }
 
         public static bool operator !=(Matrix a, Matrix b)
-        {   // Returns true if the two matrices have the same reference or the same value
+        {
+            // Returns true if the two matrices have the same reference or the same value
             if (ReferenceEquals(null, a))
             {
                 throw new NullReferenceException("The first matrix is null");
@@ -93,7 +100,12 @@ namespace NeuralSharp
             {
                 throw new NullReferenceException("The second matrix is null");
             }
-            if (ReferenceEquals(a, b)) { return false; }
+
+            if (ReferenceEquals(a, b))
+            {
+                return false;
+            }
+
             return !a.Data.SequenceEqual(b.Data) || !a.Shape.Equals(b.Shape);
         }
     }

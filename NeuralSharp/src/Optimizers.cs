@@ -2,8 +2,9 @@
 {
     public enum Optimizer
     {
-        None   
+        None
     }
+
     public class Optimizers
     {
     }

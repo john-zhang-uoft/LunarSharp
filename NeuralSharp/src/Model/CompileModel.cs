@@ -8,9 +8,9 @@ namespace NeuralSharp
         /// Compile model to prepare for training.
         /// </summary>
         /// <param name="optimizer">Optimizer used during training.</param>
-        /// <param name="loss">Loss function used during training.</param>
+        /// <param name="lossFunctions">Loss function used during training.</param>
         /// <param name="metrics">List of metrics used to validate the dataset on during training and testing.</param>
-        public void Compile(Optimizer optimizer, Loss loss, Metric[] metrics)
+        public void Compile(Optimizer optimizer, LossFunctions lossFunctions, Metric[] metrics)
         {
             if (!_layers[0].IsValidInputShape())
             {
@@ -35,7 +35,7 @@ namespace NeuralSharp
             _layers[0].InitializeRandomWeights(1);
             _layers[0].InitializeRandomBiases(1);
 
-            _lossFunction = loss;
+            _lossFunctionsFunction = lossFunctions;
         }
 
         public void InitializeParameters()

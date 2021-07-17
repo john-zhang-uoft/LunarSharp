@@ -169,7 +169,7 @@ namespace NeuralSharp
                 throw new InvalidOperationException(
                     "Kronecker product is only implemented between a row vector and column vector");
             }
-            
+
             Matrix res = new Matrix(a.Shape.cols, b.Shape.rows);
             for (int i = 0; i < a.Shape.cols; i++)
             {
@@ -247,7 +247,7 @@ namespace NeuralSharp
 
             return new Matrix((rows, cols), data);
         }
-        
+
         public override string ToString()
         {
             StringBuilder str = new StringBuilder();
@@ -256,12 +256,12 @@ namespace NeuralSharp
             for (int m = 0; m < Shape.rows - 1; m++)
             {
                 str.Append('[');
-        
+
                 for (int n = 0; n < Shape.cols - 1; n++)
                 {
                     str.Append($"{this[m, n]}, ");
                 }
-                
+
                 str.Append($"{this[m, Shape.cols - 1]}], \n");
             }
 
@@ -270,8 +270,9 @@ namespace NeuralSharp
             {
                 str.Append($"{this[Shape.rows - 1, n]}, ");
             }
+
             str.Append($"{this[Shape.rows - 1, Shape.cols - 1]}]]");
-            
+
             return str.ToString();
         }
 
