@@ -8,8 +8,8 @@ namespace NeuralSharp
     public abstract class Layer
     {
         public Matrix Neurons { get; protected set; }
-        protected (int, int, int) InputShape;
-        protected (int, int, int) OutputShape;
+        public (int, int, int) InputShape { get; protected set; }
+        public (int, int, int) OutputShape { get; protected set; }
 
         /// <summary>
         /// Has i rows and j columns, where i is the number of neurons in this layer

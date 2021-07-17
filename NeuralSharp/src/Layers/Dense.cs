@@ -20,7 +20,7 @@ namespace NeuralSharp
         {
             if (shape < 1)
             {
-                throw new InvalidDataException("Invalid dense layer shape");
+                throw new InvalidDataException("Invalid dense layer shape.");
             }
         }
 
@@ -36,7 +36,7 @@ namespace NeuralSharp
         {
             if (inputShape < 1 || shape < 1)
             {
-                throw new InvalidDataException("Invalid dense layer shape");
+                throw new InvalidDataException("Invalid dense layer shape.");
             }
         }
 
@@ -50,7 +50,7 @@ namespace NeuralSharp
             if (inputs.Shape != (InputShape.Item1, InputShape.Item2))
             {
                 throw new InvalidDataException(
-                    $"Matrix shape is {inputs.Shape} while dense layer has input shape {InputShape}");
+                    $"Matrix shape is {inputs.Shape} while dense layer has input shape {InputShape}.");
             }
 
             Neurons = (Weights * inputs + Biases).ApplyToElements(ActivationFunction);
