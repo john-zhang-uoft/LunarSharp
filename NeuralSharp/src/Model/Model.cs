@@ -79,13 +79,7 @@ namespace NeuralSharp
 
         public Matrix Predict(Matrix input)
         {
-            _layers[0].FeedForward(input);
-
-            // Feedforward result through each other layer
-            for (int l = 1; l < _layers.Count; l++)
-            {
-                _layers[l].FeedForward(_layers[l - 1].Neurons);
-            }
+            ForwardPass(input);
 
             return _layers[^1].Neurons;        
         }

@@ -11,12 +11,26 @@ namespace NeuralSharp
     {
         public Dense(int shape, ActivationFunctions activation = ActivationFunctions.None) : base()
         {
+            if (shape < 1)
+            {
+                throw new InvalidDataException("Invalid dense layer shape");
+            }
             OutputShape = (shape, 1, 1);
             ActivationFunction = activation;
         }
         
         public Dense(int inputShape, int shape, ActivationFunctions activation = ActivationFunctions.None) : base()
         {
+            if (shape < 1)
+            {
+                throw new InvalidDataException("Invalid dense layer shape");
+            }
+
+            if (inputShape < 1)
+            {
+                throw new InvalidDataException("Invalid dense layer shape");
+            }
+            
             OutputShape = (shape, 1, 1);
             InputShape = (inputShape, 1, 1);
             ActivationFunction = activation;
