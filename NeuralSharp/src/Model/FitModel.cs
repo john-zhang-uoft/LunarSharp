@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace NeuralSharp
 {
@@ -25,16 +26,90 @@ namespace NeuralSharp
             Matrix[] validationSet = null, bool shuffle = false, float[] classWeights = null,
             float[] datasetWeights = null)
         {
+            // // For each epoch
+            // for (int e = 0; e < epochs; e++)
+            // {
+            //     
+            //     // For each datapoint
+            //     for (int i = 0; i < x.Length; i++)
+            //     {
+            //         ForwardPass(x[i]);
+            //         BackwardPass(x[i], y[i], alpha, gamma);
+            //     }
+            //
+            //     float trainLoss = 0;
+            //     switch (_lossFunctionsFunction)
+            //     {
+            //         case LossFunctions.MeanSquareDError:
+            //
+            //             for (int i = 0; i < x.Length; i++)
+            //             {
+            //                 Predict(x[i]);
+            //
+            //                 trainLoss += Loss.MeanSquaredError(_layers[^1].Neurons, y[i]);
+            //             }
+            //
+            //             break;
+            //
+            //         default:
+            //             throw new NotImplementedException("Unimplemented loss function");
+            //     }
+            //
+            //     Console.WriteLine($"Train loss = {trainLoss}");
+            // }
+            
+            // Check whether x and y are the same length
+            if (x.Length != y.Length)
+            {
+                throw new InvalidDataException("X and Y are not the same shape.");
+            }
+            
             // For each epoch
             for (int e = 0; e < epochs; e++)
             {
-                // For each datapoint
-                for (int i = 0; i < x.Length; i++)
+                // For each batch
+                for (int i = 0; i < x.Length / batchSize; i++)
+                {
+                    // Reset gradients in each layer
+                    foreach (Layer l in _layers)
+                    {
+                        l.ResetGradients();
+                    }
+                    
+                    // For each datapoint inside that batch
+                    for (int j = 0; j < batchSize; j++)
+                    {
+                        ForwardPass(x[i * batchSize + j]);
+                        BackwardPass(x[i * batchSize + j], y[i * batchSize + j], alpha, gamma);
+                    }
+                    
+                    // Update gradient based on the mean gradient
+                    foreach (Layer l in _layers)
+                    {
+                        l.UpdateParameters(batchSize, alpha, gamma);
+                    }
+                }
+                
+                // Reset gradients in each layer
+                foreach (Layer l in _layers)
+                {
+                    l.ResetGradients();
+                }
+                
+                // For each remaining datapoint
+                for (int i = (x.Length / batchSize) * batchSize; i < x.Length; i++)
                 {
                     ForwardPass(x[i]);
                     BackwardPass(x[i], y[i], alpha, gamma);
                 }
+                
+                // Update gradient based on the mean gradient
+                foreach (Layer l in _layers)
+                {
+                    l.UpdateParameters(batchSize, alpha, gamma);
+                }
 
+                // Validate data
                 float trainLoss = 0;
                 switch (_lossFunctionsFunction)
                 {

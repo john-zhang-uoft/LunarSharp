@@ -67,18 +67,8 @@ namespace NeuralSharp
         public override void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target, float alpha,
             float gamma)
         {
-            SetGradient(nextLayer, target);
-            UpdateWeights(alpha, previousLayerNeurons);
-            UpdateBiases(gamma);
-        }
-
-        /// <summary>
-        /// Calculates the gradient of the loss function with respect to the weights of the dense layer and updates weights.
-        /// </summary>
-        /// <param name="alpha"></param>
-        /// <param name="lastLayerNeurons"></param>
-        private void UpdateWeights(float alpha, Matrix lastLayerNeurons)
-        {
+            SetNeuronsGradient(nextLayer, target);
+            
             // Kronecker multiplication returns a matrix where the i-th row is the i-th neuron of the previous layer
             // multiplied by the gradient of the neurons of this layer
             // The element [i, j] in the matrix is the i-th input Neuron multiplied by the j-th Neuron's delta
@@ -87,26 +77,22 @@ namespace NeuralSharp
             // to the j-th neuron of this layer
 
             // So we transpose the Kronecker product to match the weights
-
-            Weights -= alpha * Matrix.KroneckerVectorMult(lastLayerNeurons.Transpose(), Gradient).Transpose();
+            
+            StoredWeightGradient += Matrix.KroneckerVectorMult(previousLayerNeurons.Transpose(), NeuronGradient).Transpose();
+            StoredBiasGradient += NeuronGradient;
         }
 
-        private void UpdateBiases(float gamma)
-        {
-            Biases -= gamma * Gradient;
-        }
-
-        private void SetGradient(Layer nextLayer, Matrix target)
+        private void SetNeuronsGradient(Layer nextLayer, Matrix target)
         {
             if (nextLayer == null)
             {
-                Gradient = Loss.DMeanSquaredError(Neurons, target)
+                NeuronGradient = Loss.DMeanSquaredError(Neurons, target)
                     .HadamardMult(Neurons.ApplyToElements(ActivationFunction));
                 return;
             }
             else
             {
-                Gradient = (nextLayer.Weights.Transpose() * nextLayer.Gradient).HadamardMult(
+                NeuronGradient = (nextLayer.Weights.Transpose() * nextLayer.NeuronGradient).HadamardMult(
                     Neurons.ApplyToElements(ActivationFunction));
             }
         }

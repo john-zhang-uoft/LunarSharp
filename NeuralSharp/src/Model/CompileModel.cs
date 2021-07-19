@@ -19,7 +19,7 @@ namespace NeuralSharp
             
             for (int i = 0; i < _layers.Count; i++)
             {
-                if (!_layers[i].IsValidShape())
+                if (!_layers[i].IsValidOutputShape())
                 {
                     throw new InvalidDataException($"The shape of layer {i + 1} was not provided or is invalid.");
                 }

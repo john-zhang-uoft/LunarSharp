@@ -31,8 +31,15 @@ namespace NeuralSharp
         /// <summary>
         /// Stores the gradient of the cost function with respect to each neuron for backpropagation
         /// </summary>
-        public Matrix Gradient { get; protected set; }
-
+        public Matrix NeuronGradient { get; protected set; }
+        
+        public Matrix StoredWeightGradient { get; set; }
+        
+        /// <summary>
+        /// Stores the gradient of the cost function with respect to each bias for backpropagation.
+        /// This is equal to the NeuronGradient.
+        /// </summary>
+        public Matrix StoredBiasGradient { get; set; }
 
         #region Constructors
 
@@ -103,9 +110,23 @@ namespace NeuralSharp
         /// Returns true if there are no negative or zero values in the OutputShape.
         /// </summary>
         /// <returns></returns>
-        public bool IsValidShape()
+        public bool IsValidOutputShape()
         {
             return OutputShape.Item1 >= 1 && OutputShape.Item2 >= 1 && OutputShape.Item3 >= 1;
         }
+        
+        public void ResetGradients()
+        {
+            NeuronGradient = new Matrix(NeuronGradient.Shape.rows, NeuronGradient.Shape.cols);
+            StoredWeightGradient = new Matrix(StoredWeightGradient.Shape.rows, StoredWeightGradient.Shape.cols);
+            StoredBiasGradient = new Matrix(StoredBiasGradient.Shape.rows, StoredBiasGradient.Shape.cols);
+        }
+
+        public void UpdateParameters(int batchSize, float alpha, float gamma)
+        {
+            Weights -= alpha * (StoredWeightGradient / batchSize);
+            Biases -= gamma * (StoredBiasGradient / batchSize);
+        }
+
     }
 }
