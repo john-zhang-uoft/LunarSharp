@@ -9,8 +9,9 @@ namespace NeuralSharp
     public partial class Model
     {
         private List<Layer> _layers;
-        private LossFunctions _lossFunctionsFunction;
-
+        private LossFunctions _lossFunction;
+        private Metric[] _metrics;
+            
         public Model(params Layer[] layers)
         {
             if (layers.Any(layer => layer == null))
@@ -82,6 +83,32 @@ namespace NeuralSharp
             ForwardPass(input);
 
             return _layers[^1].Neurons;
+        }
+
+        public void Train(Matrix[] xBatch, Matrix[] yBatch, float alpha, float gamma)
+        {
+            if (xBatch.Length != yBatch.Length)
+            {
+                throw new InvalidDataException("X and Y batch are not the same size");
+            }
+            // Reset gradients in each layer
+            foreach (Layer l in _layers)
+            {
+                l.ResetGradients();
+            }
+                    
+            // For each datapoint inside that batch
+            for (int j = 0; j < xBatch.Length; j++)
+            {
+                ForwardPass(xBatch[j]);
+                BackwardPass(xBatch[j], yBatch[j], alpha, gamma);
+            }
+                    
+            // Update gradient based on the mean gradient
+            foreach (Layer l in _layers)
+            {
+                l.UpdateParameters(xBatch.Length, alpha, gamma);
+            }
         }
     }
 }

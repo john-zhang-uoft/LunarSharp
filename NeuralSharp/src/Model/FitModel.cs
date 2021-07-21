@@ -26,38 +26,6 @@ namespace NeuralSharp
             Matrix[] validationSet = null, bool shuffle = false, float[] classWeights = null,
             float[] datasetWeights = null)
         {
-            // // For each epoch
-            // for (int e = 0; e < epochs; e++)
-            // {
-            //     
-            //     // For each datapoint
-            //     for (int i = 0; i < x.Length; i++)
-            //     {
-            //         ForwardPass(x[i]);
-            //         BackwardPass(x[i], y[i], alpha, gamma);
-            //     }
-            //
-            //     float trainLoss = 0;
-            //     switch (_lossFunctionsFunction)
-            //     {
-            //         case LossFunctions.MeanSquareDError:
-            //
-            //             for (int i = 0; i < x.Length; i++)
-            //             {
-            //                 Predict(x[i]);
-            //
-            //                 trainLoss += Loss.MeanSquaredError(_layers[^1].Neurons, y[i]);
-            //             }
-            //
-            //             break;
-            //
-            //         default:
-            //             throw new NotImplementedException("Unimplemented loss function");
-            //     }
-            //
-            //     Console.WriteLine($"Train loss = {trainLoss}");
-            // }
-            
             // Check whether x and y are the same length
             if (x.Length != y.Length)
             {
@@ -111,7 +79,7 @@ namespace NeuralSharp
 
                 // Validate data
                 float trainLoss = 0;
-                switch (_lossFunctionsFunction)
+                switch (_lossFunction)
                 {
                     case LossFunctions.MeanSquareDError:
 

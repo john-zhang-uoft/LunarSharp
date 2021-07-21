@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace NeuralSharp
 {
@@ -24,6 +26,8 @@ namespace NeuralSharp
                     throw new InvalidDataException($"The shape of layer {i + 1} was not provided or is invalid.");
                 }
             }
+
+            _metrics = (new HashSet<Metric>(metrics)).ToArray();
             
             for (int i = _layers.Count - 1; i > 0; i--)
             {
@@ -35,7 +39,7 @@ namespace NeuralSharp
             _layers[0].InitializeRandomWeights(1);
             _layers[0].InitializeRandomBiases(1);
 
-            _lossFunctionsFunction = lossFunctions;
+            _lossFunction = lossFunctions;
         }
 
         public void InitializeParameters()
