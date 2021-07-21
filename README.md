@@ -1,7 +1,7 @@
 # NeuralSharp
 
 A native C# neural network library in progress.
-Latest update: July 20, 2021.
+Latest update: July 21, 2021.
 
 My goal is to create a working high level C# neural network library with basic functionality (for fun)! I'm not following any tutorials that provide any code so that I can hone my fundamental neural network knowledge and practice creating a well-structured design.
 Performance is not a top priority (otherwise C# would not be the language of choice), however, making computations within C# efficient is.
