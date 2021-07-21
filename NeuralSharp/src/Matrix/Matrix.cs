@@ -75,7 +75,7 @@ namespace NeuralSharp
         public float this[int i, int j]
         {
             get => Data[i * Shape.cols + j];
-            private set => Data[i * Shape.cols + j] = value;
+            set => Data[i * Shape.cols + j] = value;
         }
 
         public Matrix ApplyToElements(Func<float, float> expression)
