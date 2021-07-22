@@ -246,6 +246,20 @@ namespace NeuralSharp
             return res;
         }
 
+        public static Matrix RepeatMatrixVertically(Matrix a, int numRepeats)
+        {
+            float[] data = new float[numRepeats * a.Data.Length];
+            for (int i = 0; i < numRepeats; i++)
+            {
+                for (int j = 0; j < a.Data.Length; j++)
+                {
+                    data[i * a.Data.Length + j] = a.Data[j];
+                }
+            }
+
+            return new Matrix((a.Shape.rows * numRepeats, a.Shape.cols), data);
+        }
+        
         public static Matrix RandomMatrix(float maxWeight, int rows, int cols)
         {
             // Creates a matrix with random elements between -maxWeight and maxWeight

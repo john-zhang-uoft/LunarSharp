@@ -99,5 +99,35 @@ namespace NeuralSharp
                 Console.WriteLine($"Train loss = {trainLoss}");
             }
         }
+
+        public void FitV2(Matrix[] x, Matrix[] y, int batchSize = 1, int epochs = 1, int verbose = 1,
+            float alpha = 0.001f, float gamma = 0.001f, Callback[] callbacks = null, float validationFrac = 0,
+            Matrix[] validationSet = null, bool shuffle = false, float[] classWeights = null,
+            float[] datasetWeights = null)
+        {
+            // Check whether x and y are the same length
+            if (x.Length != y.Length)
+            {
+                throw new InvalidDataException("X and Y are not the same shape.");
+            }
+            
+            // Create a matrix for each layers' weights and a matrix for each layers' biases
+            // Each of these matrices is the layers' weights / bias matrices
+            
+            // Input will be all the inputs in a batch horizontally concatenated
+            // Output will be the regular output size with number of columns = batch size
+            // can run loss on that final output matrix directly
+            // The gradient will be the mean gradient of those datapoints
+            
+            // For each epoch
+            for (int e = 0; e < epochs; e++)
+            {
+                // For each minibatch
+                for (int i = 0; i < x.Length / batchSize; i++)
+                {
+                    
+                }
+            }
+        }
     }
 }
