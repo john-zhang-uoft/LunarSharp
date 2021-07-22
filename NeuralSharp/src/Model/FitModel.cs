@@ -81,7 +81,7 @@ namespace NeuralSharp
                 float trainLoss = 0;
                 switch (_lossFunction)
                 {
-                    case LossFunctions.MeanSquareDError:
+                    case LossFunctions.MeanSquaredError:
 
                         for (int i = 0; i < x.Length; i++)
                         {

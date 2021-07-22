@@ -208,7 +208,8 @@ namespace NeuralSharp
             // Concatenate the matrices horizontally and returns a new matrix
             if (a.Shape.rows != b.Shape.rows)
             {
-                throw new InvalidOperationException("Matrices must have the same number of rows");
+                throw new InvalidOperationException(
+                    "Matrices must have the same number of rows for horizontal concatenation.");
             }
 
             Matrix res = new Matrix(a.Shape.rows, a.Shape.cols + b.Shape.cols);
@@ -229,6 +230,19 @@ namespace NeuralSharp
                 }
             }
 
+            return res;
+        }
+
+        public static Matrix VerticalConcat(Matrix a, Matrix b)
+        {
+            // Concatenate the matrices vertically and returns a new matrix
+            if (a.Shape.cols != b.Shape.cols)
+            {
+                throw new InvalidOperationException(
+                    "Matrices must have the same number of columns for vertical concatenation.");
+            }
+
+            Matrix res = new Matrix((a.Shape.rows + b.Shape.rows, a.Shape.cols), a.Data.Concat(b.Data).ToArray());
             return res;
         }
 

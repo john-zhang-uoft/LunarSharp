@@ -5,7 +5,7 @@ namespace NeuralSharp
 {
     public enum LossFunctions
     {
-        MeanSquareDError,
+        MeanSquaredError,
     }
 
     public static class Loss
@@ -52,10 +52,23 @@ namespace NeuralSharp
                     "Matrices must be the same size for calculating binary cross entropy.");
             }
 
-            return (float) -(1.0 * target.Data.Length / output.Data.Zip(target.Data, (outputElem, targetElem) =>
-                targetElem * Math.Log(Tolerance + outputElem)).Sum());
+            return (float) -(1.0 / target.Data.Length * output.Data.Zip(target.Data, (outputElem, targetElem) =>
+                targetElem * Math.Log(Tolerance + outputElem) + (1 - targetElem) * Math.Log(Tolerance + 1 - outputElem)).Sum());
         }
+        
+        public static float DBinaryCrossEntropy(Matrix output, Matrix target)
+        {   // Matrix output and target must be 1 by 1 matrices
+            // Target matrix must be either a 1 or 0
+            if (output.Shape != target.Shape)
+            {
+                throw new InvalidOperationException(
+                    "Matrices must be the same size for calculating binary cross entropy derivative.");
+            }
 
+            return output.Data.Zip(target.Data, (outputElem, targetElem) =>
+                (outputElem - targetElem) / (outputElem * (1 - targetElem))).Sum();
+        }
+        
         /// <summary>
         /// Calculates categorical cross entropy loss between matrices of one hot encoded values for multi-class classification.
         /// </summary>
@@ -70,8 +83,7 @@ namespace NeuralSharp
                     "Matrices must be the same size for calculating mean squared error derivative");
             }
 
-            return (float) -(1.0 * target.Data.Length / output.Data.Zip(target.Data, (outputElem, targetElem) =>
-                targetElem * Math.Log(Tolerance + outputElem)).Sum());
+            throw new NotImplementedException();
         }
     }
 }

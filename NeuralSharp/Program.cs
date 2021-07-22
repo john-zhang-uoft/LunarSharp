@@ -25,7 +25,7 @@ namespace NeuralSharp
             Matrix[] x = {input1, input2};
             Matrix[] y = {output1, output2};
 
-            model.Compile(Optimizer.None, LossFunctions.MeanSquareDError, new[] {Metric.None});
+            model.Compile(Optimizer.None, LossFunctions.MeanSquaredError, new[] {Metric.None});
             model.Fit(x, y, epochs: 1000, alpha: 0.0001f, gamma: 0.0001f);
 
             Console.WriteLine(model.Predict(x[0]));
