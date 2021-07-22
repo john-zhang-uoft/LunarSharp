@@ -1,6 +1,8 @@
 # NeuralSharp
 
 A native C# neural network library in progress.
+
+
 Latest update: July 22, 2021 - Implementing minibatch gradient descent as big matrix operations to reduce garbage collection.
 
 
