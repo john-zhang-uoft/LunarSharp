@@ -117,9 +117,9 @@ namespace NeuralSharp
         
         public void ResetGradients()
         {
-            NeuronGradient = new Matrix(NeuronGradient.Shape.rows, NeuronGradient.Shape.cols);
-            StoredWeightGradient = new Matrix(StoredWeightGradient.Shape.rows, StoredWeightGradient.Shape.cols);
-            StoredBiasGradient = new Matrix(StoredBiasGradient.Shape.rows, StoredBiasGradient.Shape.cols);
+            NeuronGradient = new Matrix(OutputShape.Item1, 1);
+            StoredWeightGradient = new Matrix(OutputShape.Item1, InputShape.Item1);
+            StoredBiasGradient = new Matrix(OutputShape.Item1, 1);
         }
 
         public void UpdateParameters(int batchSize, float alpha, float gamma)
