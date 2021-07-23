@@ -3,7 +3,7 @@
 A native C# neural network library in progress.
 
 
-Latest update: July 22, 2021 - Implementing minibatch gradient descent as big matrix operations to reduce garbage collection.
+Latest update: July 23, 2021 - Fixed ResetGradient() bugs
 
 
 My goal is to create a working high level C# neural network library with basic functionality (for fun)! I'm not following any tutorials that provide any code so that I can hone my fundamental neural network knowledge and practice creating a well-structured design.
