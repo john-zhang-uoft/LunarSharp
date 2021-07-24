@@ -17,7 +17,7 @@ namespace NeuralSharp
         {
             if (layers.Any(layer => layer == null))
             {
-                throw new InvalidDataException("Layer cannot be null");
+                throw new InvalidDataException("Layer cannot be null.");
             }
 
             _layers = new List<Layer>(layers);
@@ -32,7 +32,7 @@ namespace NeuralSharp
         {
             if (layer == null)
             {
-                throw new InvalidDataException("Layer cannot be null");
+                throw new InvalidDataException("Layer cannot be null.");
             }
 
             _layers.Add(layer);
@@ -90,7 +90,7 @@ namespace NeuralSharp
         {
             if (xBatch.Length != yBatch.Length)
             {
-                throw new InvalidDataException("X and Y batch are not the same size");
+                throw new InvalidDataException("X and Y batch are not the same size.");
             }
             // Reset gradients in each layer
             foreach (Layer l in _layers)

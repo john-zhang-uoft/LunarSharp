@@ -21,7 +21,7 @@ namespace NeuralSharp
         {
             if (a.Shape != b.Shape)
             {
-                throw new InvalidOperationException("Cannot add two matrices with different shape");
+                throw new InvalidOperationException("Cannot add two matrices with different shapes.");
             }
 
             return new Matrix(a.Data.Zip(b.Data, (elemA, elemB) => elemA + elemB), a.Shape);
@@ -31,7 +31,7 @@ namespace NeuralSharp
         {
             if (a.Shape != b.Shape)
             {
-                throw new InvalidOperationException("Cannot subtract two matrices with different shape");
+                throw new InvalidOperationException("Cannot subtract two matrices with different shapes.");
             }
 
             return new Matrix(a.Data.Zip(b.Data, (elemA, elemB) => elemA - elemB), a.Shape);
@@ -72,12 +72,12 @@ namespace NeuralSharp
             // Returns true if the two matrices have the same reference or the same value
             if (ReferenceEquals(null, a))
             {
-                throw new NullReferenceException("The first matrix is null");
+                throw new NullReferenceException("The first matrix is null.");
             }
 
             if (ReferenceEquals(null, b))
             {
-                throw new NullReferenceException("The second matrix is null");
+                throw new NullReferenceException("The second matrix is null.");
             }
 
             if (ReferenceEquals(a, b))
@@ -93,12 +93,12 @@ namespace NeuralSharp
             // Returns true if the two matrices have the same reference or the same value
             if (ReferenceEquals(null, a))
             {
-                throw new NullReferenceException("The first matrix is null");
+                throw new NullReferenceException("The first matrix is null.");
             }
 
             if (ReferenceEquals(null, b))
             {
-                throw new NullReferenceException("The second matrix is null");
+                throw new NullReferenceException("The second matrix is null.");
             }
 
             if (ReferenceEquals(a, b))

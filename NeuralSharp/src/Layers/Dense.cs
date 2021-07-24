@@ -62,8 +62,6 @@ namespace NeuralSharp
         /// <param name="nextLayer"></param>
         /// <param name="previousLayerNeurons"></param>
         /// <param name="target"></param>
-        /// <param name="alpha"></param>
-        /// <param name="gamma"></param>
         /// <param name="dLossFunction"></param>
         public override void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target,
             Func<Matrix, Matrix, Matrix> dLossFunction)

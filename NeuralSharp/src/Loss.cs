@@ -18,7 +18,7 @@ namespace NeuralSharp
             if (output.Shape != target.Shape)
             {
                 throw new InvalidOperationException(
-                    "Matrices must be the same size for calculating mean squared error");
+                    "Matrices must be the same size for calculating mean squared error.");
             }
 
             return output.Data.Zip(target.Data,
@@ -32,7 +32,7 @@ namespace NeuralSharp
             if (output.Shape != target.Shape)
             {
                 throw new InvalidOperationException(
-                    "Matrices must be the same size for calculating mean squared error derivative");
+                    "Matrices must be the same size for calculating mean squared error derivative.");
             }
 
             return 2 * (output - target) / target.Data.Length;

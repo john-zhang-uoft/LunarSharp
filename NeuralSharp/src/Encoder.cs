@@ -37,6 +37,7 @@ namespace NeuralSharp
         /// if equal to the actual number of classes.
         /// </summary>
         /// <param name="classList"></param>
+        /// <param name="numClasses"></param>
         public void Configure(string[] classList, int numClasses)
         {
             NumClasses = numClasses;
@@ -46,7 +47,7 @@ namespace NeuralSharp
             if (NumClasses != classList.Length)
             {
                 throw new InvalidDataException(
-                    "Input numClasses is not equal to the number of classes found in dataset.");
+                    "The input numClasses is not equal to the number of classes found in dataset.");
             }
             
             for (int i = 0; i < NumClasses; i++)
@@ -71,12 +72,13 @@ namespace NeuralSharp
                 _intToMatrixMap[classList[i]] = encoded;
             }
         }
-        
+
         /// <summary>
         /// Fit the label encoder on a list of int class names. Check whether the specified number of classes
         /// if equal to the actual number of classes.
         /// </summary>
         /// <param name="classList"></param>
+        /// <param name="numClasses"></param>
         public void Configure(int[] classList, int numClasses)
         {
             NumClasses = numClasses;

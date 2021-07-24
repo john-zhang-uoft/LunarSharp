@@ -16,7 +16,7 @@ namespace NeuralSharp
         {
             if (output.Shape != target.Shape)
             {
-                throw new InvalidDataException("Matrices must be the same size for calculating accuracy");
+                throw new InvalidDataException("Matrices must be the same size for calculating accuracy.");
             }
             
             return output.Data.Zip(target.Data,

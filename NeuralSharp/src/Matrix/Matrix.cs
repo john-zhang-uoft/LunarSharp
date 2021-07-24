@@ -32,7 +32,7 @@ namespace NeuralSharp
         {
             if (a.Data.Length != a.Shape.rows * a.Shape.cols)
             {
-                throw new InvalidDataException("Matrix shape does not match element data");
+                throw new InvalidDataException("Matrix shape does not match element data.");
             }
 
             Data = a.Data;
@@ -43,7 +43,7 @@ namespace NeuralSharp
         {
             if (data.Length != shape.rows * shape.cols)
             {
-                throw new InvalidDataException("Matrix shape does not match element data");
+                throw new InvalidDataException("Matrix shape does not match element data.");
             }
 
             Data = data;
@@ -54,7 +54,7 @@ namespace NeuralSharp
         {
             if (data.Length != shape.rows * shape.cols)
             {
-                throw new InvalidDataException("Matrix shape does not match element data");
+                throw new InvalidDataException("Matrix shape does not match element data.");
             }
 
             Data = data;
@@ -67,7 +67,7 @@ namespace NeuralSharp
 
             if (Data.Length != shape.rows * shape.cols)
             {
-                throw new InvalidDataException("Matrix shape does not match element data");
+                throw new InvalidDataException("Matrix shape does not match element data.");
             }
 
             Shape = shape;
@@ -107,7 +107,7 @@ namespace NeuralSharp
             // Regular matrix multiplication
             if (a.Shape.cols != b.Shape.rows)
             {
-                throw new InvalidOperationException("Invalid matrix shapes, cannot perform matrix multiplication");
+                throw new InvalidOperationException("Invalid matrix shapes, cannot perform matrix multiplication.");
             }
 
             Matrix res = new Matrix(a.Shape.rows, b.Shape.cols);
@@ -136,7 +136,7 @@ namespace NeuralSharp
             // Element-wise multiplication
             if (a.Shape != b.Shape)
             {
-                throw new InvalidOperationException("Matrices must be the same size for element-wise multiplication");
+                throw new InvalidOperationException("Matrices must be the same size for element-wise multiplication.");
             }
 
             return new Matrix(a.Data.Zip(b.Data, (elemA, elemB) => elemA * elemB), a.Shape);
@@ -147,7 +147,7 @@ namespace NeuralSharp
             // Element-wise multiplication
             if (Shape != b.Shape)
             {
-                throw new InvalidOperationException("Matrices must be the same size for element-wise multiplication");
+                throw new InvalidOperationException("Matrices must be the same size for element-wise multiplication.");
             }
 
             return new Matrix(Data.Zip(b.Data, (elemA, elemB) => elemA * elemB), Shape);
@@ -168,7 +168,7 @@ namespace NeuralSharp
             if (a.Shape.rows != 1 || b.Shape.cols != 1)
             {
                 throw new InvalidOperationException(
-                    "Kronecker product is only implemented between a row vector and column vector");
+                    "Kronecker product is only implemented between a row vector and column vector.");
             }
 
             Matrix res = new Matrix(a.Shape.cols, b.Shape.rows);
@@ -189,7 +189,7 @@ namespace NeuralSharp
             if (Shape.rows != 1 || b.Shape.cols != 1)
             {
                 throw new InvalidOperationException(
-                    "Kronecker product is only implemented between a row vector and column vector");
+                    "Kronecker product is only implemented between a row vector and column vector.");
             }
 
             Matrix res = new Matrix(Shape.cols, b.Shape.rows);

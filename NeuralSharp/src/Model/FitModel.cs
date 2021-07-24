@@ -31,6 +31,8 @@ namespace NeuralSharp
             {
                 throw new InvalidDataException("X and Y are not the same shape.");
             }
+            
+            Console.WriteLine($"Starting training process with verbosity: {verbose}.");
 
             // For each epoch
             for (int e = 0; e < epochs; e++)
