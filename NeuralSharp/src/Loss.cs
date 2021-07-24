@@ -6,6 +6,7 @@ namespace NeuralSharp
     public enum LossFunctions
     {
         MeanSquaredError,
+        BinaryCrossEntropy
     }
 
     public static class Loss
@@ -44,46 +45,30 @@ namespace NeuralSharp
         /// <param name="target"></param>
         /// <returns></returns>
         public static float BinaryCrossEntropy(Matrix output, Matrix target)
-        {   // Matrix output and target must be 1 by 1 matrices
+        {
+            // Matrix output and target must be 1 by 1 matrices
             // Target matrix must be either a 1 or 0
-            if (output.Shape != target.Shape)
+            if (output.Shape != (1, 1) || target.Shape != (1, 1))
             {
                 throw new InvalidOperationException(
-                    "Matrices must be the same size for calculating binary cross entropy.");
+                    "Matrices must be 1 by 1 for calculating binary cross entropy.");
             }
 
-            return (float) -(1.0 / target.Data.Length * output.Data.Zip(target.Data, (outputElem, targetElem) =>
-                targetElem * Math.Log(Tolerance + outputElem) + (1 - targetElem) * Math.Log(Tolerance + 1 - outputElem)).Sum());
+            return (float) -(1.0 / target.Data.Length * target[0, 0] * Math.Log(Tolerance + output[0, 0]) +
+                             (1 - target[0, 0]) * Math.Log(Tolerance + 1 - output[0, 0]));
         }
-        
-        public static float DBinaryCrossEntropy(Matrix output, Matrix target)
-        {   // Matrix output and target must be 1 by 1 matrices
+
+        public static Matrix DBinaryCrossEntropy(Matrix output, Matrix target)
+        {
+            // Matrix output and target must be 1 by 1 matrices
             // Target matrix must be either a 1 or 0
-            if (output.Shape != target.Shape)
+            if (output.Shape != (1, 1) || target.Shape != (1, 1))
             {
                 throw new InvalidOperationException(
-                    "Matrices must be the same size for calculating binary cross entropy derivative.");
+                    "Matrices must be 1 by 1 for calculating binary cross entropy.");
             }
 
-            return output.Data.Zip(target.Data, (outputElem, targetElem) =>
-                (outputElem - targetElem) / (outputElem * (1 - targetElem))).Sum();
-        }
-        
-        /// <summary>
-        /// Calculates categorical cross entropy loss between matrices of one hot encoded values for multi-class classification.
-        /// </summary>
-        /// <param name="output"></param>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        public static float CategoricalCrossEntropy(Matrix output, Matrix target)
-        {   // Target matrix must contain one hot encoded values
-            if (output.Shape != target.Shape)
-            {
-                throw new InvalidOperationException(
-                    "Matrices must be the same size for calculating mean squared error derivative");
-            }
-
-            throw new NotImplementedException();
+            return (output - target) / (output[0, 0] * (1 - output[0, 0]) + Tolerance);
         }
     }
 }

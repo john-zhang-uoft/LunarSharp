@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
@@ -10,9 +12,9 @@ namespace NeuralSharp
         /// Compile model to prepare for training.
         /// </summary>
         /// <param name="optimizer">Optimizer used during training.</param>
-        /// <param name="lossFunctions">Loss function used during training.</param>
+        /// <param name="lossFunction">Loss function used during training.</param>
         /// <param name="metrics">List of metrics used to validate the dataset on during training and testing.</param>
-        public void Compile(Optimizer optimizer, LossFunctions lossFunctions, Metric[] metrics)
+        public void Compile(Optimizer optimizer, LossFunctions lossFunction, IEnumerable<Metric> metrics)
         {
             if (!_layers[0].IsValidInputShape())
             {
@@ -27,7 +29,7 @@ namespace NeuralSharp
                 }
             }
 
-            _metrics = (new HashSet<Metric>(metrics)).ToArray();
+            _metrics = new HashSet<Metric>(metrics).ToArray();
             
             for (int i = _layers.Count - 1; i > 0; i--)
             {
@@ -39,12 +41,23 @@ namespace NeuralSharp
             _layers[0].InitializeRandomWeights(1);
             _layers[0].InitializeRandomBiases(1);
 
-            _lossFunction = lossFunctions;
-        }
+            switch (lossFunction)
+            {
+                case LossFunctions.MeanSquaredError:
+                    _lossFunction = Loss.MeanSquaredError;
+                    _dLossFunction = Loss.DMeanSquaredError;
+                    break;
 
-        public void InitializeParameters()
-        {
+                case LossFunctions.BinaryCrossEntropy:
+                    _lossFunction = Loss.BinaryCrossEntropy;
+                    _dLossFunction = Loss.DBinaryCrossEntropy;
+                    break;
+                
+                default:
+                    throw new InvalidModelArgumentException("Invalid loss function.");
+            }
             
         }
+        
     }
 }

@@ -31,16 +31,12 @@ namespace NeuralSharp
             {
                 throw new InvalidDataException("X and Y are not the same shape.");
             }
-            
-            // Check that batch size is smaller than the dataset
-            if (batchSize > x.Length)
-            {
-                throw new InvalidDataException("Batch size cannot be larger than the number of samples.");
-            }
-            
+
             // For each epoch
             for (int e = 0; e < epochs; e++)
             {
+                string message = $"Epoch: {e + 1}\t";
+             
                 // For each batch
                 for (int i = 0; i < x.Length / batchSize; i++)
                 {
@@ -56,7 +52,7 @@ namespace NeuralSharp
                         ForwardPass(x[i * batchSize + j]);
                         BackwardPass(x[i * batchSize + j], y[i * batchSize + j], alpha, gamma);
                     }
-                    
+
                     // Update gradient based on the mean gradient
                     foreach (Layer l in _layers)
                     {
@@ -85,24 +81,17 @@ namespace NeuralSharp
 
                 // Validate data
                 float trainLoss = 0;
-                switch (_lossFunction)
+                for (int i = 0; i < x.Length; i++)
                 {
-                    case LossFunctions.MeanSquaredError:
+                    Predict(x[i]);
 
-                        for (int i = 0; i < x.Length; i++)
-                        {
-                            Predict(x[i]);
-
-                            trainLoss += Loss.MeanSquaredError(_layers[^1].Neurons, y[i]);
-                        }
-
-                        break;
-
-                    default:
-                        throw new NotImplementedException("Unimplemented loss function");
+                    trainLoss += _lossFunction(_layers[^1].Neurons, y[i]);
                 }
-
-                Console.WriteLine($"Train loss = {trainLoss}");
+                trainLoss /= x.Length;
+                
+                message += $"Train loss = {trainLoss}";
+                
+                Console.WriteLine(message);
             }
         }
     }

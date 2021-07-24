@@ -31,15 +31,15 @@ namespace NeuralSharp
         /// <summary>
         /// Stores the gradient of the cost function with respect to each neuron for backpropagation
         /// </summary>
-        public Matrix NeuronGradient { get; protected set; }
+        public Matrix Gradient { get; protected set; }
         
-        public Matrix StoredWeightGradient { get; set; }
+        public Matrix DeltaWeight { get; set; }
         
         /// <summary>
         /// Stores the gradient of the cost function with respect to each bias for backpropagation.
         /// This is equal to the NeuronGradient.
         /// </summary>
-        public Matrix StoredBiasGradient { get; set; }
+        public Matrix DeltaBias { get; set; }
 
         #region Constructors
 
@@ -79,8 +79,8 @@ namespace NeuralSharp
 
         public abstract void FeedForward(Matrix inputs);
 
-        public abstract void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target, float alpha,
-            float gamma);
+        public abstract void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target, 
+            Func<Matrix, Matrix, Matrix> dLossFunction);
 
         public void Connect(Layer previousLayer)
         {
@@ -117,15 +117,15 @@ namespace NeuralSharp
         
         public void ResetGradients()
         {
-            NeuronGradient = new Matrix(OutputShape.Item1, 1);
-            StoredWeightGradient = new Matrix(OutputShape.Item1, InputShape.Item1);
-            StoredBiasGradient = new Matrix(OutputShape.Item1, 1);
+            Gradient = new Matrix(OutputShape.Item1, OutputShape.Item2);
+            DeltaWeight = new Matrix(Weights.Shape.rows, Weights.Shape.cols);
+            DeltaBias = new Matrix(Biases.Shape.rows, Biases.Shape.cols);
         }
 
         public void UpdateParameters(int batchSize, float alpha, float gamma)
         {
-            Weights -= alpha * (StoredWeightGradient / batchSize);
-            Biases -= gamma * (StoredBiasGradient / batchSize);
+            Weights -= alpha / batchSize * DeltaWeight;
+            Biases -= gamma / batchSize * DeltaBias;
         }
 
     }
