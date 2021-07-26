@@ -37,6 +37,13 @@ namespace NeuralSharp
 
             Console.WriteLine($"Starting training process with verbosity: {verbose}.");
 
+            // Make copies of x and y data to prevent the original data passed in from being rearranged
+            Matrix[] xCopy = new Matrix[x.Length];
+            Matrix[] yCopy = new Matrix[y.Length];
+            
+            Array.Copy(x, xCopy, x.Length);
+            Array.Copy(y, yCopy, y.Length);
+            
             // For each epoch
             for (int e = 0; e < epochs; e++)
             {
@@ -44,8 +51,7 @@ namespace NeuralSharp
 
                 if (shuffle)
                 {
-                    x.Shuffle();
-                    y.Shuffle();
+                    Shuffle(xCopy, yCopy);
                 }
 
                 List<Matrix> xTrain = new List<Matrix>();
@@ -55,12 +61,12 @@ namespace NeuralSharp
 
                 if (validationFrac > 0)
                 {
-                    (xTrain, yTrain, xVal, yVal) = TrainValSplitList(x, y, validationFrac);
+                    (xTrain, yTrain, xVal, yVal) = TrainValSplitList(xCopy, yCopy, validationFrac);
                 }
                 else
                 {
-                    xTrain = x.ToList();
-                    yTrain = y.ToList();
+                    xTrain = xCopy.ToList();
+                    yTrain = yCopy.ToList();
                 }
 
                 // For each batch
@@ -110,14 +116,14 @@ namespace NeuralSharp
 
                 // Validate data
                 float trainLoss = 0;
-                for (int i = 0; i < x.Length; i++)
+                for (int i = 0; i < xTrain.Count; i++)
                 {
-                    Predict(x[i]);
+                    Predict(xTrain[i]);
 
-                    trainLoss += _lossFunction(_layers[^1].Neurons, y[i]);
+                    trainLoss += _lossFunction(_layers[^1].Neurons, yTrain[i]);
                 }
 
-                trainLoss /= x.Length;
+                trainLoss /= xTrain.Count;
 
                 message += $"Train loss = {trainLoss}";
                 
@@ -158,6 +164,13 @@ namespace NeuralSharp
 
             Console.WriteLine($"Starting training process with verbosity: {verbose}.");
 
+            // Make copies of x and y data to prevent the original data passed in from being rearranged
+            Matrix[] xCopy = new Matrix[x.Length];
+            Matrix[] yCopy = new Matrix[y.Length];
+            
+            Array.Copy(x, xCopy, x.Length);
+            Array.Copy(y, yCopy, y.Length);
+            
             // For each epoch
             for (int e = 0; e < epochs; e++)
             {
@@ -165,23 +178,22 @@ namespace NeuralSharp
 
                 if (shuffle)
                 {
-                    x.Shuffle();
-                    y.Shuffle();
+                    Shuffle(xCopy, yCopy);
                 }
 
-                Matrix[] xTrain = new Matrix[] { };
-                Matrix[] yTrain = new Matrix[] { };
-                Matrix[] xVal = new Matrix[] { };
-                Matrix[] yVal = new Matrix[] { };
+                Matrix[] xTrain = Array.Empty<Matrix>();
+                Matrix[] yTrain = Array.Empty<Matrix>();
+                Matrix[] xVal = Array.Empty<Matrix>();
+                Matrix[] yVal = Array.Empty<Matrix>();
 
                 if (validationFrac > 0)
                 {
-                    (xTrain, yTrain, xVal, yVal) = TrainValSplit(x, y, validationFrac);
+                    (xTrain, yTrain, xVal, yVal) = TrainValSplit(xCopy, yCopy, validationFrac);
                 }
                 else
                 {
-                    xTrain = x;
-                    yTrain = y;
+                    xTrain = xCopy;
+                    yTrain = yCopy;
                 }
 
                 // For each batch
