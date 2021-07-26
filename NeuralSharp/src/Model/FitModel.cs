@@ -188,9 +188,12 @@ namespace NeuralSharp
                         yTrain[i..(i + batchSize)], alpha, gamma);
                 }
 
-                TrainBatch(xTrain[(xTrain.Length / batchSize * batchSize).. xTrain.Length],
-                    yTrain[(xTrain.Length / batchSize * batchSize).. xTrain.Length], alpha, gamma);
-
+                if (xTrain.Length / batchSize * batchSize != xTrain.Length)
+                {
+                    TrainBatch(xTrain[(xTrain.Length / batchSize * batchSize).. xTrain.Length],
+                        yTrain[(xTrain.Length / batchSize * batchSize).. xTrain.Length], alpha, gamma);
+                }
+                
                 // Validate train data
                 float trainLoss = 0;
                 for (int i = 0; i < xTrain.Length; i++)
