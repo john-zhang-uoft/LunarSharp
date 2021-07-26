@@ -140,13 +140,10 @@ namespace NeuralSharp
             {
                 throw new InvalidDataException("x and y are not the same length.");
             }
-
-            int numVal = (int) Math.Round(x.Length * validationFrac);
-                
             // Store current number of needed items and number of available ones left to select from 
             
-            double neededVal = numVal; // number of items to select for val;
-            double neededTrain = x.Length - numVal;
+            double neededVal = (int) Math.Round(x.Length * validationFrac); // number of items to select for val;
+            double neededTrain = x.Length - neededVal;
             double available = x.Length;
 
             T[] xTrain = new T[(int) (x.Length - neededVal)];
@@ -162,14 +159,14 @@ namespace NeuralSharp
             {   // If the element is randomly selected
                 if (Rand.NextDouble() < neededVal / available)
                 {
-                    xVal[numVal - (int) neededVal] = x[i];
-                    yVal[numVal - (int) neededVal] = y[i];
+                    xVal[^(int) neededVal] = x[i];
+                    yVal[^(int) neededVal] = y[i];
                     neededVal--;
                 }
                 else
                 {
-                    xTrain[x.Length - (int) neededTrain] = x[i];
-                    yTrain[x.Length - (int) neededTrain] = y[i];
+                    xTrain[^(int) neededTrain] = x[i];
+                    yTrain[^(int) neededTrain] = y[i];
                     neededTrain--;
                 }
                 available--;
