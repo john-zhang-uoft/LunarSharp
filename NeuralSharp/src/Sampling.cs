@@ -28,6 +28,35 @@ namespace NeuralSharp
         }
 
         /// <summary>
+        /// Randomly orders the elements in a two lists such that the elements
+        /// in those lists that match indices still match indices. Does not return a new list.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <typeparam name="T"></typeparam>
+        public static void Shuffle<T>(T[] x, T[] y)
+        {
+            if (x.Length != y.Length)
+            {
+                throw new InvalidDataException("X and y must be the same size.");
+            }
+            int n = x.Length;
+
+            while (n > 1) {  
+                n--;
+                int k = Rand.Next(n + 1);
+                T xValue = x[k];
+                T yValue = y[k];
+                
+                x[k] = x[n];
+                y[k] = y[n];
+
+                x[n] = xValue;
+                y[n] = yValue;
+            }
+        }
+        
+        /// <summary>
         /// Returns list of n randomly chosen elements in a random order.
         /// </summary>
         /// <param name="list"></param>

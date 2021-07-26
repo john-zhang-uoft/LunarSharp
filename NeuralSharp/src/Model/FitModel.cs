@@ -86,23 +86,26 @@ namespace NeuralSharp
                     }
                 }
 
-                // Reset gradients in each layer
-                foreach (Layer l in _layers)
-                {
-                    l.ResetGradients();
-                }
-
                 // For each remaining datapoint
-                for (int i = (xTrain.Count / batchSize) * batchSize; i < xTrain.Count; i++)
+                if (xTrain.Count / batchSize * batchSize != xTrain.Count)
                 {
-                    ForwardPass(xTrain[i]);
-                    BackwardPass(xTrain[i], yTrain[i], alpha, gamma);
-                }
+                    // Reset gradients in each layer
+                    foreach (Layer l in _layers)
+                    {
+                        l.ResetGradients();
+                    }
+                    
+                    for (int i = (xTrain.Count / batchSize) * batchSize; i < xTrain.Count; i++)
+                    {
+                        ForwardPass(xTrain[i]);
+                        BackwardPass(xTrain[i], yTrain[i], alpha, gamma);
+                    }
 
-                // Update gradient based on the mean gradient
-                foreach (Layer l in _layers)
-                {
-                    l.UpdateParameters(xTrain.Count - (xTrain.Count / batchSize * batchSize), alpha, gamma);
+                    // Update gradient based on the mean gradient
+                    foreach (Layer l in _layers)
+                    {
+                        l.UpdateParameters(xTrain.Count - (xTrain.Count / batchSize * batchSize), alpha, gamma);
+                    }
                 }
 
                 // Validate data
@@ -219,7 +222,7 @@ namespace NeuralSharp
 
                     valLoss /= xVal.Length;
 
-                    message += $"Validation loss = {valLoss}";
+                    message += $"\tValidation loss = {valLoss}";
                 }
 
                 Console.WriteLine(message);
