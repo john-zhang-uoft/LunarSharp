@@ -92,7 +92,7 @@ namespace NeuralSharp
             {
                 throw new InvalidDataException("X and Y batch are not the same size.");
             }
-
+            
             if (xBatch.Length == 0 || yBatch.Length == 0)
             {
                 throw new InvalidDataException("X and Y batch cannot be empty for training.");
