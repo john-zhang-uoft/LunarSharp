@@ -30,17 +30,9 @@ namespace NeuralSharp
             }
 
             _metrics = new HashSet<Metric>(metrics).ToArray();
-            
-            for (int i = _layers.Count - 1; i > 0; i--)
-            {
-                _layers[i].Connect(_layers[i - 1]);
-                _layers[i].InitializeRandomWeights(1);
-                _layers[i].InitializeRandomBiases(1);
-            }
-            
-            _layers[0].InitializeRandomWeights(1);
-            _layers[0].InitializeRandomBiases(1);
 
+            InitializeParametersXavier();
+            
             switch (lossFunction)
             {
                 case LossFunctions.MeanSquaredError:

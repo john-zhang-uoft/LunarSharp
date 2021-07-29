@@ -97,6 +97,11 @@ namespace NeuralSharp
             Biases = Matrix.RandomMatrix(range, OutputShape.Item1, 1);
         }
 
+        public void InitializeZeroBiases()
+        {
+            Biases = new Matrix((OutputShape.Item1, 1));
+        }
+
         /// <summary>
         /// Returns true if there are no negative or zero values in the InputShape.
         /// </summary>

@@ -8,11 +8,9 @@ namespace NeuralSharp
         public static void Main(string[] args)
         {
             Model model = new Model(
-                new Dense(inputShape: 2, shape: 128, ActivationFunctions.Sigmoid),
-                new Dense(shape: 256, ActivationFunctions.Sigmoid),
-                new Dense(512, ActivationFunctions.Sigmoid),
-                new Dense(512, ActivationFunctions.Sigmoid),
-                new Dense(512, ActivationFunctions.Sigmoid),
+                new Dense(inputShape: 2, shape: 4, ActivationFunctions.Sigmoid),
+                new Dense(shape: 4, ActivationFunctions.Sigmoid),
+                new Dense(4, ActivationFunctions.Sigmoid),
                 new Dense(shape: 2, ActivationFunctions.Sigmoid)
             );
 
