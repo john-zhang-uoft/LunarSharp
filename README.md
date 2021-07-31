@@ -3,7 +3,7 @@
 A native C# neural network library in progress.
 
 
-Latest update: July 24, 2021 - Restructured model
+Latest update: July 29, 2021 - New weight initializer
 
 
 My goal is to create a working high level C# neural network library with basic functionality (for fun)! I'm not following any tutorials that provide any code so that I can hone my fundamental neural network knowledge and practice creating a well-structured design.
