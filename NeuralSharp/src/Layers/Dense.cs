@@ -86,13 +86,12 @@ namespace NeuralSharp
             if (nextLayer == null)
             {
                 Gradient = dLossFunction(Neurons, target)
-                    .HadamardMult(DActivationFunction(Neurons));
-                return;
+                    .HadamardMult(DerivativeActivationFunction(Neurons));
             }
             else
             {
                 Gradient = (nextLayer.Weights.Transpose() * nextLayer.Gradient)
-                    .HadamardMult(DActivationFunction(Neurons));
+                    .HadamardMult(DerivativeActivationFunction(Neurons));
             }
         }
     }

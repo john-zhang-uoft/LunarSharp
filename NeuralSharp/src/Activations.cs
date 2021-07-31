@@ -17,7 +17,7 @@ namespace NeuralSharp
             return (float) (1 / (1 + Math.Exp(-x)));
         }
 
-        private static float DSigmoid(float x)
+        private static float DerivativeSigmoid(float x)
         {
             return Sigmoid(x) * (1 - Sigmoid(x));
         }
@@ -27,9 +27,9 @@ namespace NeuralSharp
             return x.ApplyToElements(Sigmoid);
         }
 
-        public static Matrix DSigmoid(Matrix x)
+        public static Matrix DerivativeSigmoid(Matrix x)
         {
-            return x.ApplyToElements(DSigmoid);
+            return x.ApplyToElements(DerivativeSigmoid);
         }
 
         private static float Tanh(float x)
@@ -37,7 +37,7 @@ namespace NeuralSharp
             return (float) ((Math.Tanh(x) + 1) / 2);
         }
         
-        private static float DTanh(float x)
+        private static float DerivativeTanh(float x)
         {
             return (float) ((1 - Math.Pow(Math.Tanh(x), 2)) / 2);
         }
@@ -47,9 +47,9 @@ namespace NeuralSharp
             return x.ApplyToElements(Tanh);
         }
 
-        public static Matrix DTanh(Matrix x)
+        public static Matrix DerivativeTanh(Matrix x)
         {
-            return x.ApplyToElements(DTanh);
+            return x.ApplyToElements(DerivativeTanh);
         }
         
         private static float ReLU(float x)
@@ -57,7 +57,7 @@ namespace NeuralSharp
             return (x > 0) ? x : 0;
         }
 
-        private static float DReLU(float x)
+        private static float DerivativeReLU(float x)
         {
             return (x > 0) ? 1 : 0;
         }
@@ -67,9 +67,9 @@ namespace NeuralSharp
             return x.ApplyToElements(ReLU);
         }
 
-        public static Matrix DReLU(Matrix x)
+        public static Matrix DerivativeReLU(Matrix x)
         {
-            return x.ApplyToElements(DReLU);
+            return x.ApplyToElements(DerivativeReLU);
         }
         
         private static float None(float x)
@@ -77,7 +77,7 @@ namespace NeuralSharp
             return x;
         }
 
-        private static float DNone(float x)
+        private static float DerivativeNone(float x)
         {
             return 1;
         }
@@ -87,7 +87,7 @@ namespace NeuralSharp
             return x;
         }
 
-        public static Matrix DNone(Matrix x)
+        public static Matrix DerivativeNone(Matrix x)
         {
             return Matrix.MakeFullMatrixOfNum(x.Shape, 1);
         }
@@ -98,7 +98,7 @@ namespace NeuralSharp
             return res / res.SumElements();
         }
 
-        public static Matrix DSoftmax(Matrix x)
+        public static Matrix DerivativeSoftmax(Matrix x)
         {
             throw new NotImplementedException();
         }

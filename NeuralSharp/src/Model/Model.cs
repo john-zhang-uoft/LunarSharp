@@ -10,7 +10,7 @@ namespace NeuralSharp
     {
         private List<Layer> _layers;
         private Func<Matrix, Matrix, float> _lossFunction;
-        private Func<Matrix, Matrix, Matrix> _dLossFunction;
+        private Func<Matrix, Matrix, Matrix> _derivativeLossFunction;
         private Metric[] _metrics;
             
         public Model(params Layer[] layers)
@@ -65,14 +65,14 @@ namespace NeuralSharp
             // Backpropagation algorithm to calculate gradient with respect to neurons
             // then with respect to weights and biases and adjust parameters
 
-            _layers[^1].BackPropagate(null, _layers[^2].Neurons, target, _dLossFunction);
+            _layers[^1].BackPropagate(null, _layers[^2].Neurons, target, _derivativeLossFunction);
 
             for (int l = _layers.Count - 2; l >= 1; l--)
             {
-                _layers[l].BackPropagate(_layers[l + 1], _layers[l - 1].Neurons, target, _dLossFunction);
+                _layers[l].BackPropagate(_layers[l + 1], _layers[l - 1].Neurons, target, _derivativeLossFunction);
             }
 
-            _layers[0].BackPropagate(_layers[1], input, target, _dLossFunction);
+            _layers[0].BackPropagate(_layers[1], input, target, _derivativeLossFunction);
         }
 
         public void Save(string filePath)
@@ -84,38 +84,6 @@ namespace NeuralSharp
             ForwardPass(input);
 
             return _layers[^1].Neurons;
-        }
-
-        public void TrainBatch(Matrix[] xBatch, Matrix[] yBatch, float alpha, float gamma)
-        {
-            if (xBatch.Length != yBatch.Length)
-            {
-                throw new InvalidDataException("X and Y batch are not the same size.");
-            }
-            
-            if (xBatch.Length == 0 || yBatch.Length == 0)
-            {
-                throw new InvalidDataException("X and Y batch cannot be empty for training.");
-            }
-            
-            // Reset gradients in each layer
-            foreach (Layer l in _layers)
-            {
-                l.ResetGradients();
-            }
-                    
-            // For each datapoint inside that batch
-            for (int j = 0; j < xBatch.Length; j++)
-            {
-                ForwardPass(xBatch[j]);
-                BackwardPass(xBatch[j], yBatch[j], alpha, gamma);
-            }
-                    
-            // Update gradient based on the mean gradient
-            foreach (Layer l in _layers)
-            {
-                l.UpdateParameters(xBatch.Length, alpha, gamma);
-            }
         }
     }
 }

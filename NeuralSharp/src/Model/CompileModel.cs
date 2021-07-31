@@ -31,24 +31,43 @@ namespace NeuralSharp
 
             _metrics = new HashSet<Metric>(metrics).ToArray();
 
+            ConnectLayers();
+            
             InitializeParametersXavier();
             
             switch (lossFunction)
             {
                 case LossFunctions.MeanSquaredError:
                     _lossFunction = Loss.MeanSquaredError;
-                    _dLossFunction = Loss.DMeanSquaredError;
+                    _derivativeLossFunction = Loss.DMeanSquaredError;
                     break;
 
                 case LossFunctions.BinaryCrossEntropy:
                     _lossFunction = Loss.BinaryCrossEntropy;
-                    _dLossFunction = Loss.DBinaryCrossEntropy;
+                    _derivativeLossFunction = Loss.DBinaryCrossEntropy;
                     break;
                 
                 default:
                     throw new InvalidModelArgumentException("Invalid loss function.");
             }
             
+        }
+
+        /// <summary>
+        /// Connects the layers in the model together to construct weight matrices of the right size.
+        /// </summary>
+        /// <exception cref="InvalidDataException"></exception>
+        public void ConnectLayers()
+        {
+            if (_layers == null || _layers.Count == 0)
+            {
+                throw new InvalidDataException("The model does not contain any layers");
+            }
+
+            for (int i = _layers.Count - 1; i > 0; i--)
+            {
+                _layers[i].Connect(_layers[i - 1]);
+            }
         }
         
     }

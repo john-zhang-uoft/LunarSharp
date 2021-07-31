@@ -31,7 +31,7 @@ namespace NeuralSharp
         /// <summary>
         /// Applied to layer to calculated derivative of the activation function.
         /// </summary>
-        protected Func<Matrix, Matrix> DActivationFunction { get; }
+        protected Func<Matrix, Matrix> DerivativeActivationFunction { get; }
         
         /// <summary>
         /// Stores the gradient of the cost function with respect to each neuron for backpropagation
@@ -63,12 +63,12 @@ namespace NeuralSharp
                 ActivationFunctions.None => Activations.None,
                 _ => throw new InvalidOperationException("Unimplemented Activation Function")
             };
-            DActivationFunction = activation switch
+            DerivativeActivationFunction = activation switch
             {
-                ActivationFunctions.Sigmoid => Activations.DSigmoid,
-                ActivationFunctions.Tanh => Activations.DTanh,
-                ActivationFunctions.ReLU => Activations.DReLU,
-                ActivationFunctions.None => Activations.DNone,
+                ActivationFunctions.Sigmoid => Activations.DerivativeSigmoid,
+                ActivationFunctions.Tanh => Activations.DerivativeTanh,
+                ActivationFunctions.ReLU => Activations.DerivativeReLU,
+                ActivationFunctions.None => Activations.DerivativeNone,
                 _ => throw new InvalidOperationException("Unimplemented Activation Function")
             };
         }
@@ -85,12 +85,12 @@ namespace NeuralSharp
                 ActivationFunctions.None => Activations.None,
                 _ => throw new InvalidOperationException("Unimplemented Activation Function")
             };
-            DActivationFunction = activation switch
+            DerivativeActivationFunction = activation switch
             {
-                ActivationFunctions.Sigmoid => Activations.DSigmoid,
-                ActivationFunctions.Tanh => Activations.DTanh,
-                ActivationFunctions.ReLU => Activations.DReLU,
-                ActivationFunctions.None => Activations.DNone,
+                ActivationFunctions.Sigmoid => Activations.DerivativeSigmoid,
+                ActivationFunctions.Tanh => Activations.DerivativeTanh,
+                ActivationFunctions.ReLU => Activations.DerivativeReLU,
+                ActivationFunctions.None => Activations.DerivativeNone,
                 _ => throw new InvalidOperationException("Unimplemented Activation Function")
             };
         }

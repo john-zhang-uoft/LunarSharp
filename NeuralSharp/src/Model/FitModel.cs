@@ -240,5 +240,38 @@ namespace NeuralSharp
                 Console.WriteLine(message);
             }
         }
+        
+        public void TrainBatch(Matrix[] xBatch, Matrix[] yBatch, float alpha, float gamma)
+        {
+            if (xBatch.Length != yBatch.Length)
+            {
+                throw new InvalidDataException("X and Y batch are not the same size.");
+            }
+            
+            if (xBatch.Length == 0 || yBatch.Length == 0)
+            {
+                throw new InvalidDataException("X and Y batch cannot be empty for training.");
+            }
+            
+            // Reset gradients in each layer
+            foreach (Layer l in _layers)
+            {
+                l.ResetGradients();
+            }
+                    
+            // For each datapoint inside that batch
+            for (int j = 0; j < xBatch.Length; j++)
+            {
+                ForwardPass(xBatch[j]);
+                BackwardPass(xBatch[j], yBatch[j], alpha, gamma);
+            }
+                    
+            // Update gradient based on the mean gradient
+            foreach (Layer l in _layers)
+            {
+                l.UpdateParameters(xBatch.Length, alpha, gamma);
+            }
+        }
+        
     }
 }
