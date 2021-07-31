@@ -24,10 +24,15 @@ namespace NeuralSharp
         public Matrix Biases { get; protected set; }
 
         /// <summary>
-        /// Applied to each neuron in the layer to finish calculating the brightness of each neuron.
+        /// Applied to layer to finish calculating the brightness of each neuron.
         /// </summary>
-        protected Func<float, float> ActivationFunction { get; }
+        protected Func<Matrix, Matrix> ActivationFunction { get; }
 
+        /// <summary>
+        /// Applied to layer to calculated derivative of the activation function.
+        /// </summary>
+        protected Func<Matrix, Matrix> DActivationFunction { get; }
+        
         /// <summary>
         /// Stores the gradient of the cost function with respect to each neuron for backpropagation
         /// </summary>
@@ -58,6 +63,14 @@ namespace NeuralSharp
                 ActivationFunctions.None => Activations.None,
                 _ => throw new InvalidOperationException("Unimplemented Activation Function")
             };
+            DActivationFunction = activation switch
+            {
+                ActivationFunctions.Sigmoid => Activations.DSigmoid,
+                ActivationFunctions.Tanh => Activations.DTanh,
+                ActivationFunctions.ReLU => Activations.DReLU,
+                ActivationFunctions.None => Activations.DNone,
+                _ => throw new InvalidOperationException("Unimplemented Activation Function")
+            };
         }
 
         protected Layer((int, int, int) inputShape, (int, int, int) outputShape, ActivationFunctions activation)
@@ -70,6 +83,14 @@ namespace NeuralSharp
                 ActivationFunctions.Tanh => Activations.Tanh,
                 ActivationFunctions.ReLU => Activations.ReLU,
                 ActivationFunctions.None => Activations.None,
+                _ => throw new InvalidOperationException("Unimplemented Activation Function")
+            };
+            DActivationFunction = activation switch
+            {
+                ActivationFunctions.Sigmoid => Activations.DSigmoid,
+                ActivationFunctions.Tanh => Activations.DTanh,
+                ActivationFunctions.ReLU => Activations.DReLU,
+                ActivationFunctions.None => Activations.DNone,
                 _ => throw new InvalidOperationException("Unimplemented Activation Function")
             };
         }

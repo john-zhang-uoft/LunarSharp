@@ -73,6 +73,17 @@ namespace NeuralSharp
             Shape = shape;
         }
 
+        public static Matrix MakeFullMatrixOfNum((int rows, int cols) shape, float num)
+        {
+            float[] data = new float[shape.rows * shape.cols];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = num;
+            }
+
+            return new Matrix(shape, data);
+        }
+
         public float this[int i, int j]
         {
             get => Data[i * Shape.cols + j];
@@ -142,6 +153,12 @@ namespace NeuralSharp
             return new Matrix(a.Data.Zip(b.Data, (elemA, elemB) => elemA * elemB), a.Shape);
         }
 
+        /// <summary>
+        /// Performs element-wise multiplication.
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public Matrix HadamardMult(Matrix b)
         {
             // Element-wise multiplication
@@ -259,6 +276,21 @@ namespace NeuralSharp
             }
 
             return new Matrix((a.Shape.rows * numRepeats, a.Shape.cols), data);
+        }
+
+        /// <summary>
+        /// Returns the sum of the all the elements of the matrix. 
+        /// </summary>
+        /// <returns></returns>
+        public float SumElements()
+        {
+            float sum = 0;
+            for (int i = 0; i < Data.Length; i++)
+            {
+                sum += Data[i];
+            }
+
+            return sum;
         }
         
         public static Matrix RandomMatrix(float maxWeight, int rows, int cols)

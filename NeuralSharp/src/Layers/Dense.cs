@@ -53,7 +53,7 @@ namespace NeuralSharp
                     $"Matrix shape is {inputs.Shape} while dense layer has input shape {InputShape}.");
             }
 
-            Neurons = (Weights * inputs + Biases).ApplyToElements(ActivationFunction);
+            Neurons = ActivationFunction(Weights * inputs + Biases);
         }
 
         /// <summary>
@@ -86,13 +86,13 @@ namespace NeuralSharp
             if (nextLayer == null)
             {
                 Gradient = dLossFunction(Neurons, target)
-                    .HadamardMult(Neurons.ApplyToElements(ActivationFunction));
+                    .HadamardMult(DActivationFunction(Neurons));
                 return;
             }
             else
             {
-                Gradient = (nextLayer.Weights.Transpose() * nextLayer.Gradient).HadamardMult(
-                    Neurons.ApplyToElements(ActivationFunction));
+                Gradient = (nextLayer.Weights.Transpose() * nextLayer.Gradient)
+                    .HadamardMult(DActivationFunction(Neurons));
             }
         }
     }
