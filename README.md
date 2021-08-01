@@ -1,4 +1,4 @@
-# NeuralSharp
+# LunarSharp
 
 A native C# neural network library in progress.
 
