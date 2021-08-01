@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -291,6 +292,36 @@ namespace NeuralSharp
             }
 
             return sum;
+        }
+
+        /// <summary>
+        /// Returns a column vector of the extracted column and the remaining matrix.
+        /// </summary>
+        /// <param name="col"></param>
+        /// <returns></returns>
+        public (Matrix colMatrix, Matrix remainingMatrix) ExtractCol(int col)
+        {
+            float[] colMatrixData = new float[Shape.rows];
+            float[] remainingMatrixData = new float[Shape.rows * (Shape.cols - 1)];
+
+            for (int i = 0; i < Shape.rows; i++)
+            {
+
+                for (int j = 0; j < col; j++)
+                {
+                    remainingMatrixData[i * (Shape.cols - 1) + j] = this[i, j];
+                }
+
+                colMatrixData[i] = this[i, col];
+
+                for (int k = col + 1; k < Shape.rows; k++)
+                {
+                    remainingMatrixData[i * (Shape.cols - 1) + k - 1] = this[i, k];
+                }
+            }
+
+            return (new Matrix((Shape.rows, 1), colMatrixData),
+                new Matrix((Shape.rows, Shape.cols - 1), remainingMatrixData));
         }
         
         public static Matrix RandomMatrix(float maxWeight, int rows, int cols)
