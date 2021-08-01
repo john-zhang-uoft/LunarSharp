@@ -11,9 +11,10 @@ Performance is not a top priority (otherwise C# would not be the language of cho
 
 Plans:
 
-1. Implement convolutional layers.
-2. Implement dropout layers.
-3. Add optimizers.
-4. Implement automatic differentiation.
+1. Implement softmax activation and categorical cross entropy loss.
+2. Implement convolutional layers.
+3. Implement dropout layers.
+4. Add optimizers.
+5. Implement automatic differentiation.
 
 ![Image of NeuralSharp code](https://github.com/john-zhang-uoft/NeuralSharp/blob/master/Mnist%20Example.png)
