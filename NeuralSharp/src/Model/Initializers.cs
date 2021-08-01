@@ -15,18 +15,30 @@ namespace NeuralSharp
                 throw new InvalidOperationException("Cannot initialize parameters of layers with invalid shapes.");
             }
             
-            float range;
-            for (int i = _layers.Count - 1; i > 0; i--)
+            for (int i = 0; i < _layers.Count; i++)
             {
-                range = (float) Math.Sqrt(6f / (_layers[i].InputShape.Item1 + _layers[i].OutputShape.Item1));
+                float range = (float) Math.Sqrt(6f / (_layers[i].InputShape.Item1 + _layers[i].OutputShape.Item1));
                 _layers[i].InitializeRandomWeights(range);
                 _layers[i].InitializeZeroBiases();
             }
-            
-            range = (float) Math.Sqrt(6f / (_layers[0].InputShape.Item1 + _layers[0].OutputShape.Item1));
+        }
 
-            _layers[0].InitializeRandomWeights(range);
-            _layers[0].InitializeZeroBiases();
+        /// <summary>
+        /// Initializes weights and biases for layers that are already connected.
+        /// </summary>
+        public void InitializeParametersHe()
+        {
+            if (_layers.Any(layer => !layer.IsValidInputShape() || !layer.IsValidOutputShape()))
+            {
+                throw new InvalidOperationException("Cannot initialize parameters of layers with invalid shapes.");
+            }
+
+            for (int i = 0; i < _layers.Count; i++)
+            {
+                float range = (float) Math.Sqrt(2f / _layers[i].InputShape.Item1);
+                _layers[i].InitializeRandomWeights(range);
+                _layers[i].InitializeZeroBiases();
+            }
         }
     }
 }

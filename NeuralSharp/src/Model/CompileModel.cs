@@ -30,7 +30,7 @@ namespace NeuralSharp
             }
 
             _metrics = new HashSet<Metric>(metrics).ToArray();
-
+                
             ConnectLayers();
             
             InitializeParametersXavier();

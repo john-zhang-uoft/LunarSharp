@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
@@ -88,7 +89,7 @@ namespace NeuralSharp
         public float this[int i, int j]
         {
             get => Data[i * Shape.cols + j];
-            set => Data[i * Shape.cols + j] = value;
+            private set => Data[i * Shape.cols + j] = value;
         }
 
         public Matrix ApplyToElements(Func<float, float> expression)
@@ -314,7 +315,7 @@ namespace NeuralSharp
 
                 colMatrixData[i] = this[i, col];
 
-                for (int k = col + 1; k < Shape.rows; k++)
+                for (int k = col + 1; k < Shape.cols; k++)
                 {
                     remainingMatrixData[i * (Shape.cols - 1) + k - 1] = this[i, k];
                 }
@@ -384,7 +385,7 @@ namespace NeuralSharp
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Data, Shape);
+            return HashCode.Combine(((IStructuralEquatable)Data).GetHashCode(EqualityComparer<float>.Default), Shape);
         }
     }
 }

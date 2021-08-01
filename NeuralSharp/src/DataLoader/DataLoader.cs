@@ -40,7 +40,7 @@ namespace NeuralSharp
                     }
                     string[] values = line.Split(separation);
                     
-                    res.Add(new Matrix(values.Select(float.Parse), (values.Length, 1)));
+                    res.Add(new Matrix(values.Select(float.Parse), (1, values.Length)));
                     
                 }
             }

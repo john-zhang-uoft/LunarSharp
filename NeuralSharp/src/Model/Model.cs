@@ -12,6 +12,7 @@ namespace NeuralSharp
         private Func<Matrix, Matrix, float> _lossFunction;
         private Func<Matrix, Matrix, Matrix> _derivativeLossFunction;
         private Metric[] _metrics;
+        private TrainLog _log;
             
         public Model(params Layer[] layers)
         {
@@ -74,7 +75,7 @@ namespace NeuralSharp
 
             _layers[0].BackPropagate(_layers[1], input, target, _derivativeLossFunction);
         }
-
+        
         public void Save(string filePath)
         {
         }

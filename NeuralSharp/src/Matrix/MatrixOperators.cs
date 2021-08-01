@@ -14,7 +14,7 @@ namespace NeuralSharp
 
         public static Matrix operator +(Matrix a)
         {
-            return new Matrix(a);
+            return a;
         }
 
         public static Matrix operator +(Matrix a, Matrix b)
