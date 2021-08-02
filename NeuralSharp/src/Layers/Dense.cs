@@ -20,7 +20,7 @@ namespace NeuralSharp
         {
             if (shape < 1)
             {
-                throw new InvalidDataException("Invalid dense layer shape.");
+                throw new InvalidDataException($"Invalid dense layer shape (shape = {shape}).");
             }
         }
 
@@ -36,7 +36,7 @@ namespace NeuralSharp
         {
             if (inputShape < 1 || shape < 1)
             {
-                throw new InvalidDataException("Invalid dense layer shape.");
+                throw new InvalidDataException($"Invalid dense layer shape (input = {inputShape}, shape = {shape}).");
             }
         }
 

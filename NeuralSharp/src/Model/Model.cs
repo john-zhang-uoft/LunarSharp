@@ -40,7 +40,7 @@ namespace NeuralSharp
         }
 
         /// <summary>
-        /// Feed an input through all the layers of the network.
+        /// Feed an input through all the layers of the network as the forward step during backpropagation.
         /// </summary>
         /// <param name="input"></param>
         private void ForwardPass(Matrix input)
@@ -79,11 +79,23 @@ namespace NeuralSharp
         public void Save(string filePath)
         {
         }
-
+        
+        /// <summary>
+        /// Uses the full capabilities of the model to make a prediction given an input.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public Matrix Predict(Matrix input)
         {
-            ForwardPass(input);
-
+            Matrix previousNeurons = input;
+            
+            // Feedforward result through each layer that is not a dropout layer
+            foreach (Layer t in _layers.Where(t => t is not Dropout))
+            {
+                t.FeedForward(previousNeurons);
+                previousNeurons = t.Neurons;
+            }
+            
             return _layers[^1].Neurons;
         }
     }
