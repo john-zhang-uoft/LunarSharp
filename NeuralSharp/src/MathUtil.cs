@@ -10,7 +10,7 @@ namespace NeuralSharp
         /// <param name="successFrac"></param>
         /// <param name="shape"></param>
         /// <returns></returns>
-        public static Matrix BernoulliDistribution(float successFrac, (int rows, int cols) shape)
+        public static Matrix RandBernoulliDistribution(float successFrac, (int rows, int cols) shape)
         {
             (int rows, int cols) = shape;
             double needed = (int) Math.Round(successFrac * rows * cols);

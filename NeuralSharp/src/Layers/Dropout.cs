@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Security.Cryptography;
-
+ 
 namespace NeuralSharp
 {
     public class Dropout : Layer
@@ -32,14 +31,14 @@ namespace NeuralSharp
             // Multiply inputs by the multiplier to keep the sum of the neurons the same
             float multiplier = 1 / (1 - _rate);
             
-            Neurons = 1 / (1 - _rate) * inputs.HadamardMult(MathUtil.BernoulliDistribution(_rate, inputs.Shape));
+            Neurons = 1 / (1 - _rate) * inputs.HadamardMult(MathUtil.RandBernoulliDistribution(_rate, inputs.Shape));
         }
 
         public override void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target,
             Func<Matrix, Matrix, Matrix> dLossFunction)
         {
             Gradient = 1 / (1 - _rate) *
-                       nextLayer.Gradient.HadamardMult(MathUtil.BernoulliDistribution(_rate, nextLayer.Gradient.Shape));
+                       nextLayer.Gradient.HadamardMult(MathUtil.RandBernoulliDistribution(_rate, nextLayer.Gradient.Shape));
         }
         
     }
