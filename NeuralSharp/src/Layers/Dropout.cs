@@ -29,38 +29,18 @@ namespace NeuralSharp
         {
             int numToKeep = (int) Math.Round(InputShape.Item1 * _rate); // number of items to select
 
-            // Store current number of needed items and number of available ones left to select from 
-            double needed = numToKeep;
-            double available = InputShape.Item1;
-
-            Random rand = new Random();
-            float[] neurons = new float[InputShape.Item1];
-
-            // Iterate through matrix
-            // The probability that an element is selected is needed / available,
-            // Guaranteeing that the required number of elements are selected in one pass through
-            for (int i = 0; i < InputShape.Item1; i++)
-            {
-                // If the element is randomly selected
-                if (rand.NextDouble() < needed / available)
-                {
-                    neurons[i] = inputs[i, 0];
-                    needed--;
-                }
-                else
-                {
-                    neurons[i] = 0;
-                }
-
-                available--;
-            }
-
-            Neurons = new Matrix((InputShape.Item1, 1), neurons);
+            // Multiply inputs by the multiplier to keep the sum of the neurons the same
+            float multiplier = 1 / (1 - _rate);
+            
+            Neurons = 1 / (1 - _rate) * inputs.HadamardMult(MathUtil.BernoulliDistribution(_rate, inputs.Shape));
         }
 
-        public override void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target, Func<Matrix, Matrix, Matrix> dLossFunction)
+        public override void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target,
+            Func<Matrix, Matrix, Matrix> dLossFunction)
         {
-            throw new NotImplementedException();
+            Gradient = 1 / (1 - _rate) *
+                       nextLayer.Gradient.HadamardMult(MathUtil.BernoulliDistribution(_rate, nextLayer.Gradient.Shape));
         }
+        
     }
 }
