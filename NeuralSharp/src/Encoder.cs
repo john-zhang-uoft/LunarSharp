@@ -59,9 +59,26 @@ namespace NeuralSharp
             }
         }
         
+        /// <summary>
+        /// Returns one-hot encoded labels given a list of labels. The encoder must already be configured.
+        /// </summary>
+        /// <param name="classList"></param>
+        /// <returns></returns>
         public Matrix[] Transform(T[] classList)
         {
             return classList.Select(i => ToMatrixMap[i]).ToArray();
+        }
+
+        /// <summary>
+        /// Configures encoder on class labels and returns one-hot encoded labels.
+        /// </summary>
+        /// <param name="labels"></param>
+        /// <returns></returns>
+        public static Matrix[] Encode(T[] labels)
+        {
+            Encoder<T> encoder = new Encoder<T>();
+            encoder.Configure(labels);
+            return encoder.Transform(labels);
         }
     }
 }

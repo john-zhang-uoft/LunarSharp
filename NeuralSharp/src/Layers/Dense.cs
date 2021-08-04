@@ -68,6 +68,12 @@ namespace NeuralSharp
         {
             SetNeuronsGradient(nextLayer, target, dLossFunction);
 
+            DeltaWeight += Matrix.KroneckerVectorMult(previousLayerNeurons.Transpose(), Gradient).Transpose();
+            DeltaBias += Gradient;
+        }
+
+        private void SetNeuronsGradient(Layer nextLayer, Matrix target, Func<Matrix, Matrix, Matrix> dLossFunction)
+        {
             // Kronecker multiplication returns a matrix where the i-th row is the i-th neuron of the previous layer
             // multiplied by the gradient of the neurons of this layer
             // The element [i, j] in the matrix is the i-th input Neuron multiplied by the j-th Neuron's delta
@@ -76,13 +82,7 @@ namespace NeuralSharp
             // to the j-th neuron of this layer
 
             // So we transpose the Kronecker product to match the weights
-
-            DeltaWeight += Matrix.KroneckerVectorMult(previousLayerNeurons.Transpose(), Gradient).Transpose();
-            DeltaBias += Gradient;
-        }
-
-        private void SetNeuronsGradient(Layer nextLayer, Matrix target, Func<Matrix, Matrix, Matrix> dLossFunction)
-        {
+            
             if (nextLayer == null)
             {
                 Gradient = dLossFunction(Neurons, target)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using NeuralSharp;
 
 namespace NeuralSharp
@@ -8,23 +9,14 @@ namespace NeuralSharp
         public static void Main(string[] args)
         {
             // Load Mnist dataset
-            string path = @"C:\Users\johnz\RiderProjects\NeuralSharp2\NeuralSharp2\mnist_test.csv";
+            const string path = @"C:\Users\johnz\RiderProjects\NeuralSharp2\NeuralSharp2\mnist_test.csv";
             Matrix[] data = DataLoader.ReadCsv(path, ",", numHeaderRows: 1);
 
             // Get features and labels
-            Matrix[] x = new Matrix[data.Length];
-            Matrix[] y = new Matrix[data.Length];
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                (y[i], x[i]) = data[i].ExtractCol(0);
-            }
+            (Matrix[] y, Matrix[] x) = Matrix.ExtractCol(data, 0); 
 
             // One-hot encode labels
-            Encoder<Matrix> encoder = new Encoder<Matrix>();
-
-            encoder.Configure(y);
-            y = encoder.Transform(y);
+            y = Encoder<Matrix>.Encode(y);
 
             // Turn features into proper format
             for (int i = 0; i < x.Length; i++)

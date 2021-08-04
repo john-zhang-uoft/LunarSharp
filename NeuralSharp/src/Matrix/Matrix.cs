@@ -324,6 +324,19 @@ namespace NeuralSharp
             return (new Matrix((Shape.rows, 1), colMatrixData),
                 new Matrix((Shape.rows, Shape.cols - 1), remainingMatrixData));
         }
+
+        public static (Matrix[] colMatrices, Matrix[] remainingMatrices) ExtractCol(Matrix[] matrices, int col)
+        {
+            Matrix[] colMatrices = new Matrix[matrices.Length];
+            Matrix[] remainingMatrices = new Matrix[matrices.Length];
+
+            for (int i = 0; i < matrices.Length; i++)
+            {
+                (colMatrices[i], remainingMatrices[i]) = matrices[i].ExtractCol(col);
+            }
+
+            return (colMatrices, remainingMatrices);
+        }
         
         public static Matrix RandomMatrix(float maxWeight, int rows, int cols)
         {
