@@ -66,14 +66,6 @@ namespace NeuralSharp
         public override void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target,
             Func<Matrix, Matrix, Matrix> dLossFunction)
         {
-            SetNeuronsGradient(nextLayer, target, dLossFunction);
-
-            DeltaWeight += Matrix.KroneckerVectorMult(previousLayerNeurons.Transpose(), Gradient).Transpose();
-            DeltaBias += Gradient;
-        }
-
-        private void SetNeuronsGradient(Layer nextLayer, Matrix target, Func<Matrix, Matrix, Matrix> dLossFunction)
-        {
             // Kronecker multiplication returns a matrix where the i-th row is the i-th neuron of the previous layer
             // multiplied by the gradient of the neurons of this layer
             // The element [i, j] in the matrix is the i-th input Neuron multiplied by the j-th Neuron's delta
@@ -88,11 +80,31 @@ namespace NeuralSharp
                 Gradient = dLossFunction(Neurons, target)
                     .HadamardMult(DerivativeActivationFunction(Neurons));
             }
-            else
+            else if (nextLayer is Dense)
             {
                 Gradient = (nextLayer.Weights.Transpose() * nextLayer.Gradient)
                     .HadamardMult(DerivativeActivationFunction(Neurons));
             }
+            else    // next layer is a Dropout layer
+            {
+                Gradient = nextLayer.Gradient.HadamardMult(DerivativeActivationFunction(nextLayer.Neurons));
+            }
+            
+            DeltaWeight += Matrix.KroneckerVectorMult(previousLayerNeurons.Transpose(), Gradient).Transpose();
+            DeltaBias += Gradient;
         }
+
+        /// <summary>
+        /// Update weights and biases of dense layer.
+        /// </summary>
+        /// <param name="batchSize"></param>
+        /// <param name="alpha"></param>
+        /// <param name="gamma"></param>
+        public override void UpdateParameters(int batchSize, float alpha, float gamma)
+        {
+            Weights -= alpha / batchSize * DeltaWeight;
+            Biases -= gamma / batchSize * DeltaBias;
+        }
+
     }
 }

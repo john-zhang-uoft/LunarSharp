@@ -6,7 +6,8 @@ namespace NeuralSharp
     public class Dropout : Layer
     {
         private readonly float _rate;
-        
+        private readonly float _multiplier;
+
         /// <summary>
         /// Constructor for dense layers.
         /// </summary>
@@ -21,6 +22,7 @@ namespace NeuralSharp
             }
 
             _rate = rate;
+            _multiplier = 1 / (1 - _rate);
         }
 
 
@@ -29,17 +31,24 @@ namespace NeuralSharp
             int numToKeep = (int) Math.Round(InputShape.Item1 * _rate); // number of items to select
 
             // Multiply inputs by the multiplier to keep the sum of the neurons the same
-            float multiplier = 1 / (1 - _rate);
-            
-            Neurons = 1 / (1 - _rate) * inputs.HadamardMult(MathUtil.RandBernoulliDistribution(_rate, inputs.Shape));
+            Neurons = _multiplier * inputs.HadamardMult(MathUtil.RandBernoulliDistribution(_rate, inputs.Shape));
         }
 
         public override void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target,
             Func<Matrix, Matrix, Matrix> dLossFunction)
         {
-            Gradient = 1 / (1 - _rate) *
-                       nextLayer.Gradient.HadamardMult(MathUtil.RandBernoulliDistribution(_rate, nextLayer.Gradient.Shape));
+            if (nextLayer == null)
+            {
+                Gradient = dLossFunction(Neurons, target);
+            }
+            else
+            {
+                Gradient = nextLayer.Weights.Transpose() * nextLayer.Gradient;
+            }
         }
-        
+
+        public override void UpdateParameters(int batchSize, float alpha, float gamma)
+        {
+        }
     }
 }

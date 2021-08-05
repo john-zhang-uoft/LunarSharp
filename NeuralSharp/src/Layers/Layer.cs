@@ -148,11 +148,7 @@ namespace NeuralSharp
             DeltaBias = new Matrix(Biases.Shape.rows, Biases.Shape.cols);
         }
 
-        public void UpdateParameters(int batchSize, float alpha, float gamma)
-        {
-            Weights -= alpha / batchSize * DeltaWeight;
-            Biases -= gamma / batchSize * DeltaBias;
-        }
+        public abstract void UpdateParameters(int batchSize, float alpha, float gamma);
 
     }
 }
