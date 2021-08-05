@@ -97,8 +97,7 @@ namespace NeuralSharp
                 {
                     for (int i = 0; i < xVal.Length; i++)
                     {
-                        Predict(xVal[i]);
-                        valLoss += _lossFunction(_layers[^1].Neurons, yVal[i]);
+                        valLoss += _lossFunction(Predict(xVal[i]), yVal[i]);
                     }
 
                     valLoss /= xVal.Length;

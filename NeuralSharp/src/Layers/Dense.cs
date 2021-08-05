@@ -9,6 +9,7 @@ namespace NeuralSharp
     /// </summary>
     public class Dense : Layer
     {
+
         /// <summary>
         /// Constructor for dense layers.
         /// </summary>
@@ -92,6 +93,13 @@ namespace NeuralSharp
             
             DeltaWeight += Matrix.KroneckerVectorMult(previousLayerNeurons.Transpose(), Gradient).Transpose();
             DeltaBias += Gradient;
+        }
+
+        public override void ResetGradients()
+        {
+            Gradient = new Matrix(OutputShape.Item1, OutputShape.Item2);
+            DeltaWeight = new Matrix(Weights.Shape.rows, Weights.Shape.cols);
+            DeltaBias = new Matrix(Biases.Shape.rows, Biases.Shape.cols);
         }
 
         /// <summary>

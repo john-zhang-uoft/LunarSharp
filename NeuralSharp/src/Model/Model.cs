@@ -13,7 +13,7 @@ namespace NeuralSharp
         private Func<Matrix, Matrix, Matrix> _derivativeLossFunction;
         private Metric[] _metrics;
         private TrainLog _log;
-            
+        
         public Model(params Layer[] layers)
         {
             if (layers.Any(layer => layer == null))

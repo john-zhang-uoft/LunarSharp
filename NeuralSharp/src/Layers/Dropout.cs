@@ -9,7 +9,7 @@ namespace NeuralSharp
         private readonly float _multiplier;
 
         /// <summary>
-        /// Constructor for dense layers.
+        /// Constructor for dropout layers.
         /// </summary>
         /// <param name="shape"></param>
         /// <param name="rate"></param>
@@ -25,7 +25,19 @@ namespace NeuralSharp
             _multiplier = 1 / (1 - _rate);
         }
 
+        /// <summary>
+        /// Constructor for dropout layers.
+        /// </summary>
+        /// <param name="rate"></param>
+        /// <exception cref="InvalidDataException"></exception>
+        public Dropout(float rate) : base()
+        {   // Input and output shape are the same for dropout layers
 
+            _rate = rate;
+            _multiplier = 1 / (1 - _rate);
+        }
+        
+        
         public override void FeedForward(Matrix inputs)
         {
             int numToKeep = (int) Math.Round(InputShape.Item1 * _rate); // number of items to select
@@ -45,6 +57,10 @@ namespace NeuralSharp
             {
                 Gradient = nextLayer.Weights.Transpose() * nextLayer.Gradient;
             }
+        }
+
+        public override void ResetGradients()
+        {
         }
 
         public override void UpdateParameters(int batchSize, float alpha, float gamma)

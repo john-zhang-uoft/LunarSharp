@@ -7,10 +7,6 @@ namespace NeuralSharp
     /// </summary>
     public abstract class Layer
     {
-        public Matrix Neurons { get; protected set; }
-        public (int, int, int) InputShape { get; protected set; }
-        public (int, int, int) OutputShape { get; protected set; }
-
         /// <summary>
         /// Has i rows and j columns, where i is the number of neurons in this layer
         /// and j is the number of neurons in the previous layer.
@@ -22,6 +18,10 @@ namespace NeuralSharp
         /// Has i rows, where i is the number of neurons in this layer.
         /// </summary>
         public Matrix Biases { get; protected set; }
+        
+        public Matrix Neurons { get; protected set; }
+        public (int, int, int) InputShape { get; protected set; }
+        public (int, int, int) OutputShape { get; protected set; }
 
         /// <summary>
         /// Applied to layer to finish calculating the brightness of each neuron.
@@ -108,21 +108,6 @@ namespace NeuralSharp
             InputShape = previousLayer.OutputShape;
         }
 
-        public void InitializeRandomWeights(float range)
-        {
-            Weights = Matrix.RandomMatrix(range, OutputShape.Item1, InputShape.Item1);
-        }
-
-        public void InitializeRandomBiases(float range)
-        {
-            Biases = Matrix.RandomMatrix(range, OutputShape.Item1, 1);
-        }
-
-        public void InitializeZeroBiases()
-        {
-            Biases = new Matrix((OutputShape.Item1, 1));
-        }
-
         /// <summary>
         /// Returns true if there are no negative or zero values in the InputShape.
         /// </summary>
@@ -140,13 +125,23 @@ namespace NeuralSharp
         {
             return OutputShape.Item1 >= 1 && OutputShape.Item2 >= 1 && OutputShape.Item3 >= 1;
         }
-        
-        public void ResetGradients()
+        public void InitializeRandomWeights(float range)
         {
-            Gradient = new Matrix(OutputShape.Item1, OutputShape.Item2);
-            DeltaWeight = new Matrix(Weights.Shape.rows, Weights.Shape.cols);
-            DeltaBias = new Matrix(Biases.Shape.rows, Biases.Shape.cols);
+            Weights = Matrix.RandomMatrix(range, OutputShape.Item1, InputShape.Item1);
         }
+
+        public void InitializeRandomBiases(float range)
+        {
+            Biases = Matrix.RandomMatrix(range, OutputShape.Item1, 1);
+        }
+
+        public void InitializeZeroBiases()
+        {
+            Biases = new Matrix((OutputShape.Item1, 1));
+        }
+        
+        public abstract void ResetGradients();
+
 
         public abstract void UpdateParameters(int batchSize, float alpha, float gamma);
 
