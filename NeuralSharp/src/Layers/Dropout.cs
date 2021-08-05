@@ -40,8 +40,6 @@ namespace NeuralSharp
         
         public override void FeedForward(Matrix inputs)
         {
-            int numToKeep = (int) Math.Round(InputShape.Item1 * _rate); // number of items to select
-
             // Multiply inputs by the multiplier to keep the sum of the neurons the same
             Neurons = _multiplier * inputs.HadamardMult(MathUtil.RandBernoulliDistribution(_rate, inputs.Shape));
         }
