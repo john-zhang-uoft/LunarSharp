@@ -14,9 +14,7 @@ Plans:
 
 1. Implement softmax activation and categorical cross entropy loss.
 2. Implement saving model (as a csv file most likely).
-3. Implement convolutional layers.
-4. Implement dropout layers.
-5. Add optimizers.
-6. Implement automatic differentiation.
+3. Add optimizers.
+4. Implement automatic differentiation.
 
 ![Image of NeuralSharp code](https://github.com/john-zhang-uoft/NeuralSharp/blob/master/Mnist%20Example.png)
