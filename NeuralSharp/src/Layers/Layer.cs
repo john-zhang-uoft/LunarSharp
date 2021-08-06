@@ -106,12 +106,16 @@ namespace NeuralSharp
         public void Connect(Layer previousLayer)
         {
             InputShape = previousLayer.OutputShape;
-            
+        }
+
+        public void ConnectDropout(Layer previousLayer)
+        {
+            InputShape = previousLayer.OutputShape;
+
             if (this is Dropout)
             {
                 OutputShape = InputShape;
             }
-            
         }
         
 

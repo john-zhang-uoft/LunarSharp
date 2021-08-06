@@ -82,6 +82,11 @@ namespace NeuralSharp
 
             for (int i = _layers.Count - 1; i > 0; i--)
             {
+                _layers[i].ConnectDropout(_layers[i - 1]);    
+            }
+            
+            for (int i = _layers.Count - 1; i > 0; i--)
+            {
                 _layers[i].Connect(_layers[i - 1]);
             }
         }
