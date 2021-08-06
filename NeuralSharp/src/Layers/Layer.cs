@@ -106,7 +106,14 @@ namespace NeuralSharp
         public void Connect(Layer previousLayer)
         {
             InputShape = previousLayer.OutputShape;
+            
+            if (this is Dropout)
+            {
+                OutputShape = InputShape;
+            }
+            
         }
+        
 
         /// <summary>
         /// Returns true if there are no negative or zero values in the InputShape.

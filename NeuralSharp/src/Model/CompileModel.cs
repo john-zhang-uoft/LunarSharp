@@ -20,6 +20,18 @@ namespace NeuralSharp
             {
                 throw new InvalidDataException("The input shape for the first layer was not provided or is invalid.");
             }
+
+            for (int i = 1; i < _layers.Count; i++)
+            {
+                if (_layers[i] is Dropout)
+                {
+                    if (_layers[i - 1] is Dropout)
+                    {
+                        throw new InvalidModelArgumentException(
+                            $"Cannot compile model with two dropout layers in a row ({i - 1}, {i}).");
+                    }
+                }
+            }
             
             for (int i = 0; i < _layers.Count; i++)
             {

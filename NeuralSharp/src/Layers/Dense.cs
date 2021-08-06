@@ -75,22 +75,17 @@ namespace NeuralSharp
             // to the j-th neuron of this layer
 
             // So we transpose the Kronecker product to match the weights
-            
-            if (nextLayer == null)
+
+            Gradient = nextLayer switch
             {
-                Gradient = dLossFunction(Neurons, target)
-                    .HadamardMult(DerivativeActivationFunction(Neurons));
-            }
-            else if (nextLayer is Dense)
-            {
-                Gradient = (nextLayer.Weights.Transpose() * nextLayer.Gradient)
-                    .HadamardMult(DerivativeActivationFunction(Neurons));
-            }
-            else    // next layer is a Dropout layer
-            {
-                Gradient = nextLayer.Gradient.HadamardMult(DerivativeActivationFunction(nextLayer.Neurons));
-            }
-            
+                null => dLossFunction(Neurons, target).HadamardMult(DerivativeActivationFunction(Neurons)),
+                
+                Dense => (nextLayer.Weights.Transpose() * nextLayer.Gradient).
+                    HadamardMult(DerivativeActivationFunction(Neurons)),
+                
+                Dropout => nextLayer.Gradient.HadamardMult(DerivativeActivationFunction(nextLayer.Neurons))
+            };
+
             DeltaWeight += Matrix.KroneckerVectorMult(previousLayerNeurons.Transpose(), Gradient).Transpose();
             DeltaBias += Gradient;
         }
