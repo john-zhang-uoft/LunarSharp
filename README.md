@@ -3,7 +3,7 @@ NeuralSharp
 A native C# neural network library in progress.
 
 
-Latest update: August 1, 2021 - Data encoder bug fixes, DataLoader class, TrainLog class.
+Latest update: August 6, 2021 - Working dropout layer.
 
 
 My goal is to create a working high level C# neural network library with basic functionality (for fun)! I'm not following any tutorials that provide any code so that I can hone my fundamental neural network knowledge and practice creating a well-structured design.
@@ -14,9 +14,7 @@ Plans:
 
 1. Implement softmax activation and categorical cross entropy loss.
 2. Implement saving model (as a csv file most likely).
-3. Implement convolutional layers.
-4. Implement dropout layers.
-5. Add optimizers.
-6. Implement automatic differentiation.
+3. Add optimizers.
+4. Implement automatic differentiation.
 
 ![Image of NeuralSharp code](https://github.com/john-zhang-uoft/NeuralSharp/blob/master/Mnist%20Example.png)
