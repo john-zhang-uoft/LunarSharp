@@ -22,9 +22,7 @@ namespace NeuralSharp
             {
                 n--;
                 int k = Rand.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
+                (list[k], list[n]) = (list[n], list[k]);
             }
         }
 
@@ -48,14 +46,9 @@ namespace NeuralSharp
             {
                 n--;
                 int k = Rand.Next(n + 1);
-                T xValue = x[k];
-                T yValue = y[k];
-
-                x[k] = x[n];
-                y[k] = y[n];
-
-                x[n] = xValue;
-                y[n] = yValue;
+                
+                (x[k], x[n]) = (x[n], x[k]);
+                (y[k], y[n]) = (y[n], y[k]);
             }
         }
 
@@ -68,9 +61,7 @@ namespace NeuralSharp
         /// <returns></returns>
         public static IEnumerable<T> Sample<T>(this IEnumerable<T> list, int n)
         {
-            Random rand = new Random();
-
-            return list.OrderBy(x => rand.Next()).Take(n);
+            return list.OrderBy(x => Rand.Next()).Take(n);
         }
 
         /// <summary>
