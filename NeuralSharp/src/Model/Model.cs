@@ -99,25 +99,23 @@ namespace NeuralSharp
             return _layers[^1].Neurons;
         }
 
-        public float[] Evaluate(Matrix[] inputs, Matrix[] expectedOutputs, Metric[] metrics)
+        public float Evaluate(Matrix[] inputs, Matrix[] expectedOutputs, Metric[] metrics)
         {
-            float[] scores = new float[metrics.Length];
+            float accuracy = 0;
             string message = "";
-
-            scores[0] = 0;
             
             for (int i = 0; i < inputs.Length; i++)
             {
                 if (Encoder<Matrix>.ProbabilitiesToOneHot(Predict(inputs[i])) == expectedOutputs[i])
                 {
-                    scores[0] += 1;
+                    accuracy += 1;
                 }
             }
 
-            scores[0] /= inputs.Length;
-            message += $"Accuracy: {scores[0]}";
+            accuracy /= inputs.Length;
+            message += $"Accuracy: {accuracy}";
             Console.WriteLine(message);
-            return scores;
+            return accuracy;
         }
     }
 }

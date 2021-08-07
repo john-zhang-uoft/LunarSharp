@@ -12,7 +12,7 @@ namespace NeuralSharp
             Matrix[] data = DataLoader.ReadCsv(path, ",", numHeaderRows: 1);
 
             // Get features and labels
-            (Matrix[] x, Matrix[] y) = Matrix.ExtractCol(data, 0);
+            (Matrix[] y, Matrix[] x) = Matrix.ExtractCol(data, 0);
 
             // One-hot encode labels
             Encoder<Matrix> encoder = new Encoder<Matrix>();
