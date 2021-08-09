@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Metadata;
 using NeuralSharp;
 
 namespace NeuralSharp
@@ -8,9 +9,9 @@ namespace NeuralSharp
         public static void Main(string[] args)
         {
             // Load Mnist dataset
-            string path = @"C:\Users\johnz\RiderProjects\NeuralSharp2\NeuralSharp2\mnist_test.csv";
-            Matrix[] data = DataLoader.ReadCsv(path, ",", numHeaderRows: 1);
-
+            const string trainPath = @"C:\Users\johnz\RiderProjects\NeuralSharp2\NeuralSharp2\mnist_train.csv";
+            Matrix[] data = DataLoader.ReadCsv(trainPath, ",", numHeaderRows: 1);
+            
             // Get features and labels
             (Matrix[] y, Matrix[] x) = Matrix.ExtractCol(data, 0);
 
@@ -26,17 +27,34 @@ namespace NeuralSharp
             
             // Create dense model
             Model model = new Model(
-                new Dense(784, shape: 64, ActivationFunctions.ReLU),
-                new Dropout(0.2f),
+                new Dense(784, shape: 128, ActivationFunctions.ReLU),
                 new Dense(shape: 128, ActivationFunctions.ReLU),
                 new Dropout(0.2f),
+                new Dense(shape: 64, ActivationFunctions.ReLU),
                 new Dense(shape: 10, ActivationFunctions.Sigmoid)
             );
             
             model.Compile(Optimizer.None, LossFunctions.MeanSquaredError, new[] {Metric.None});
-            model.Fit(x, y, epochs: 100, alpha: 0.01f, gamma: 0.01f, batchSize: x.Length / 8, validationFrac: 0.2f);
+            model.Fit(x, y, epochs: 10, alpha: 0.001f, gamma: 0.001f, batchSize: 16, validationFrac: 0.2f);
 
-            model.Evaluate(x, y, Array.Empty<Metric>());
+            
+            // Load test data
+            const string testPath = @"C:\Users\johnz\RiderProjects\NeuralSharp2\NeuralSharp2\mnist_test.csv";
+            Matrix[] testData = DataLoader.ReadCsv(testPath, ",", numHeaderRows: 1);
+
+            (Matrix[] testY, Matrix[] testX) = Matrix.ExtractCol(testData, 0);
+            
+            // One-hot encode labels with same encoder
+            testY = encoder.Transform(testY);
+            
+            // Turn features into proper format
+            for (int i = 0; i < testX.Length; i++)
+            {
+                testX[i] = testX[i].Transpose();
+            }
+            model.Evaluate(testX, testY, Array.Empty<Metric>());
+            
         }
+        
     }
 }

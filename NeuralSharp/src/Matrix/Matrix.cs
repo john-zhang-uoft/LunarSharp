@@ -142,8 +142,7 @@ namespace NeuralSharp
 
             return res;
         }
-
-
+        
         public static Matrix HadamardMult(Matrix a, Matrix b)
         {
             // Element-wise multiplication
@@ -261,9 +260,8 @@ namespace NeuralSharp
                 throw new InvalidOperationException(
                     "Matrices must have the same number of columns for vertical concatenation.");
             }
-
-            Matrix res = new Matrix((a.Shape.rows + b.Shape.rows, a.Shape.cols), a.Data.Concat(b.Data).ToArray());
-            return res;
+            
+            return new Matrix((a.Shape.rows + b.Shape.rows, a.Shape.cols), a.Data.Concat(b.Data).ToArray());
         }
 
         public static Matrix RepeatMatrixVertically(Matrix a, int numRepeats)

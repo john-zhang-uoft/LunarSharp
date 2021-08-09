@@ -118,7 +118,6 @@ namespace NeuralSharp
             }
         }
         
-
         /// <summary>
         /// Returns true if there are no negative or zero values in the InputShape.
         /// </summary>

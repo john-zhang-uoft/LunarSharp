@@ -66,6 +66,9 @@ namespace NeuralSharp
                     Shuffle(xTrain, yTrain);
                 }
 
+                // Validate train data
+                float trainLoss = 0;
+                
                 // For each batch
                 for (int i = 0; i < xTrain.Length / batchSize * batchSize; i += batchSize)
                 {
@@ -79,8 +82,7 @@ namespace NeuralSharp
                         yTrain[(xTrain.Length / batchSize * batchSize).. xTrain.Length], alpha, gamma);
                 }
                 
-                // Validate train data
-                float trainLoss = 0;
+
                 for (int i = 0; i < xTrain.Length; i++)
                 {
                     trainLoss += _lossFunction(Predict(xTrain[i]), yTrain[i]);
@@ -119,6 +121,14 @@ namespace NeuralSharp
             }
         }
         
+        /// <summary>
+        /// Train model on a mini-batch of features and labels.
+        /// </summary>
+        /// <param name="xBatch"></param>
+        /// <param name="yBatch"></param>
+        /// <param name="alpha"></param>
+        /// <param name="gamma"></param>
+        /// <exception cref="InvalidDataException"></exception>
         public void TrainBatch(Matrix[] xBatch, Matrix[] yBatch, float alpha, float gamma)
         {
             if (xBatch.Length != yBatch.Length)
@@ -149,6 +159,54 @@ namespace NeuralSharp
             {
                 l.UpdateParameters(xBatch.Length, alpha, gamma);
             }
+        }
+
+        /// <summary>
+        /// Train model on a mini-batch of features and labels and output loss.
+        /// </summary>
+        /// <param name="xBatch"></param>
+        /// <param name="yBatch"></param>
+        /// <param name="alpha"></param>
+        /// <param name="gamma"></param>
+        /// <param name="loss"></param>
+        /// <exception cref="InvalidDataException"></exception>
+        public float TrainBatchCalcLoss(Matrix[] xBatch, Matrix[] yBatch, float alpha, float gamma)
+        {
+            float loss = 0;
+            
+            if (xBatch.Length != yBatch.Length)
+            {
+                throw new InvalidDataException("X and Y batch are not the same size.");
+            }
+            
+            if (xBatch.Length == 0 || yBatch.Length == 0)
+            {
+                throw new InvalidDataException("X and Y batch cannot be empty for training.");
+            }
+            
+            // Reset gradients in each layer
+            foreach (Layer l in _layers)
+            {
+                l.ResetGradients();
+            }
+                    
+            // For each datapoint inside that batch
+            for (int j = 0; j < xBatch.Length; j++)
+            {
+                ForwardPass(xBatch[j]);
+                
+                loss += _lossFunction(_layers[^1].Neurons, yBatch[j]);
+                
+                BackwardPass(xBatch[j], yBatch[j], alpha, gamma);
+            }
+                    
+            // Update gradient based on the mean gradient
+            foreach (Layer l in _layers)
+            {
+                l.UpdateParameters(xBatch.Length, alpha, gamma);
+            }
+
+            return loss / xBatch.Length;
         }
         
     }
