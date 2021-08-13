@@ -72,20 +72,15 @@ namespace NeuralSharp
                 // For each batch
                 for (int i = 0; i < xTrain.Length / batchSize * batchSize; i += batchSize)
                 {
-                    TrainBatch(xTrain[i..(i + batchSize)],
-                        yTrain[i..(i + batchSize)], alpha, gamma);
+                    trainLoss += TrainBatchCalcLoss(xTrain[i..(i + batchSize)],
+                        yTrain[i..(i + batchSize)], alpha, gamma) * batchSize;
                 }
 
                 if (xTrain.Length / batchSize * batchSize != xTrain.Length)
                 {
-                    TrainBatch(xTrain[(xTrain.Length / batchSize * batchSize).. xTrain.Length],
-                        yTrain[(xTrain.Length / batchSize * batchSize).. xTrain.Length], alpha, gamma);
-                }
-                
-
-                for (int i = 0; i < xTrain.Length; i++)
-                {
-                    trainLoss += _lossFunction(Predict(xTrain[i]), yTrain[i]);
+                    trainLoss += TrainBatchCalcLoss(xTrain[(xTrain.Length / batchSize * batchSize).. xTrain.Length],
+                        yTrain[(xTrain.Length / batchSize * batchSize).. xTrain.Length], alpha, gamma) 
+                                 * (xTrain.Length - xTrain.Length / batchSize * batchSize);
                 }
 
                 trainLoss /= xTrain.Length;
@@ -142,7 +137,7 @@ namespace NeuralSharp
             }
             
             // Reset gradients in each layer
-            foreach (Layer l in _layers)
+            foreach (Layer l in Layers)
             {
                 l.ResetGradients();
             }
@@ -155,7 +150,7 @@ namespace NeuralSharp
             }
                     
             // Update gradient based on the mean gradient
-            foreach (Layer l in _layers)
+            foreach (Layer l in Layers)
             {
                 l.UpdateParameters(xBatch.Length, alpha, gamma);
             }
@@ -185,7 +180,7 @@ namespace NeuralSharp
             }
             
             // Reset gradients in each layer
-            foreach (Layer l in _layers)
+            foreach (Layer l in Layers)
             {
                 l.ResetGradients();
             }
@@ -195,13 +190,13 @@ namespace NeuralSharp
             {
                 ForwardPass(xBatch[j]);
                 
-                loss += _lossFunction(_layers[^1].Neurons, yBatch[j]);
+                loss += _lossFunction(Layers[^1].Neurons, yBatch[j]);
                 
                 BackwardPass(xBatch[j], yBatch[j], alpha, gamma);
             }
                     
             // Update gradient based on the mean gradient
-            foreach (Layer l in _layers)
+            foreach (Layer l in Layers)
             {
                 l.UpdateParameters(xBatch.Length, alpha, gamma);
             }

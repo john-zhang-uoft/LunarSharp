@@ -9,7 +9,9 @@ namespace NeuralSharp
     /// </summary>
     public class Dense : Layer
     {
-
+        private Matrix previousWeightDelta;
+        private Matrix previousBiasDelta;
+        
         /// <summary>
         /// Constructor for dense layers.
         /// </summary>
@@ -109,5 +111,25 @@ namespace NeuralSharp
             Biases -= gamma / batchSize * DeltaBias;
         }
 
+        /// <summary>
+        /// Update weights and biases of dense layer with momentum
+        /// </summary>
+        /// <param name="batchSize"></param>
+        /// <param name="alpha"></param>
+        /// <param name="gamma"></param>
+        /// <param name="beta"></param>
+        public void UpdateParameters(int batchSize, float alpha, float gamma, float beta)
+        {
+            Weights -= (alpha / batchSize * DeltaWeight + beta / batchSize * previousWeightDelta);
+            Biases -= (gamma / batchSize * DeltaBias + beta / batchSize * previousBiasDelta);
+            previousBiasDelta = DeltaBias;
+            previousWeightDelta = DeltaWeight;        
+        }
+
+        public void InitializePreviousDeltas()
+        {
+            previousBiasDelta = new Matrix(Weights.Shape.rows, Weights.Shape.cols);
+            previousWeightDelta = new Matrix(Biases.Shape.rows, Biases.Shape.cols);
+        }
     }
 }

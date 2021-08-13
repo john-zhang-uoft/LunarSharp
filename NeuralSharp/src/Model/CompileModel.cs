@@ -16,16 +16,16 @@ namespace NeuralSharp
         /// <param name="metrics">List of metrics used to validate the dataset on during training and testing.</param>
         public void Compile(Optimizer optimizer, LossFunctions lossFunction, IEnumerable<Metric> metrics)
         {
-            if (!_layers[0].IsValidInputShape())
+            if (!Layers[0].IsValidInputShape())
             {
                 throw new InvalidDataException("The input shape for the first layer was not provided or is invalid.");
             }
 
-            for (int i = 1; i < _layers.Count; i++)
+            for (int i = 1; i < Layers.Count; i++)
             {
-                if (_layers[i] is Dropout)
+                if (Layers[i] is Dropout)
                 {
-                    if (_layers[i - 1] is Dropout)
+                    if (Layers[i - 1] is Dropout)
                     {
                         throw new InvalidModelArgumentException(
                             $"Cannot compile model with two dropout layers in a row ({i - 1}, {i}).");
@@ -33,11 +33,11 @@ namespace NeuralSharp
                 }
             }
             
-            for (int i = 0; i < _layers.Count; i++)
+            for (int i = 0; i < Layers.Count; i++)
             {
-                if (_layers[i] is not Dropout)
+                if (Layers[i] is not Dropout)
                 {
-                    if (!_layers[i].IsValidOutputShape())
+                    if (!Layers[i].IsValidOutputShape())
                     {
                         throw new InvalidDataException($"The shape of layer {i + 1} was not provided or is invalid.");
                     }  
@@ -66,7 +66,9 @@ namespace NeuralSharp
                 default:
                     throw new InvalidModelArgumentException("Invalid loss function.");
             }
-            
+
+            _optimizer = optimizer;
+
         }
 
         /// <summary>
@@ -75,19 +77,19 @@ namespace NeuralSharp
         /// <exception cref="InvalidDataException"></exception>
         public void ConnectLayers()
         {
-            if (_layers == null || _layers.Count == 0)
+            if (Layers == null || Layers.Count == 0)
             {
                 throw new InvalidDataException("The model does not contain any layers");
             }
 
-            for (int i = _layers.Count - 1; i > 0; i--)
+            for (int i = Layers.Count - 1; i > 0; i--)
             {
-                _layers[i].ConnectDropout(_layers[i - 1]);    
+                Layers[i].ConnectDropout(Layers[i - 1]);    
             }
             
-            for (int i = _layers.Count - 1; i > 0; i--)
+            for (int i = Layers.Count - 1; i > 0; i--)
             {
-                _layers[i].Connect(_layers[i - 1]);
+                Layers[i].Connect(Layers[i - 1]);
             }
         }
         

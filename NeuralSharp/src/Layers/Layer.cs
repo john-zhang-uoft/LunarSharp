@@ -12,12 +12,12 @@ namespace NeuralSharp
         /// and j is the number of neurons in the previous layer.
         /// The [i, j]-th element is the weight between the j-th input neuron to the i-th neuron of this layer.
         /// </summary>
-        public Matrix Weights { get; protected set; }
+        public Matrix Weights { get; set; }
 
         /// <summary>
         /// Has i rows, where i is the number of neurons in this layer.
         /// </summary>
-        public Matrix Biases { get; protected set; }
+        public Matrix Biases { get; set; }
         
         public Matrix Neurons { get; protected set; }
         public (int, int, int) InputShape { get; protected set; }
