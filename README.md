@@ -10,6 +10,12 @@ My goal is to create a working high level C# neural network library with basic f
 Performance is not a top priority (otherwise C# would not be the language of choice), however, making computations within C# efficient is.
 Everything is made from scratch, including the Matrix class, DataLoader, etc.
 
+Current notable features:
+1. (stochastic, mini-batch) Gradient descent.
+2. Data loading from csv files.
+3. Data encoder.
+4. Dense and dropouts layers.
+
 Plans:
 
 1. Implement softmax activation and categorical cross entropy loss.
