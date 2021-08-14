@@ -10,10 +10,10 @@ namespace NeuralSharp
         private Matrix[] _weightVelocity;
         private Matrix[] _biasVelocity;
         
-        public StochasticGD(float alpha = 0.01f, float beta = 0.01f, float momentum = 0.0f, bool nesterov = false)
+        public StochasticGD(float alpha = 0.01f, float gamma = 0.01f, float momentum = 0.0f, bool nesterov = false)
         {
             Alpha = alpha;
-            Beta = beta;
+            Beta = gamma;
             Momentum = momentum;
             Nesterov = nesterov;
         }
@@ -54,8 +54,12 @@ namespace NeuralSharp
         {
             if (Momentum == 0)
             {
-                for (int i = 0; i < _weightVelocity.Length; i++)
+                for (int i = 0; i < NNModel.Layers.Count; i++)
                 {
+                    if (NNModel.Layers[i] is not Dense)
+                    {
+                        continue;
+                    }
                     NNModel.Layers[i].Weights -= Alpha / batchSize * NNModel.Layers[i].DeltaWeight;
                     NNModel.Layers[i].Biases -= Beta / batchSize * NNModel.Layers[i].DeltaBias;
                 }
@@ -67,6 +71,10 @@ namespace NeuralSharp
             {
                 for (int i = 0; i < _weightVelocity.Length; i++)
                 {
+                    if (NNModel.Layers[i] is not Dense)
+                    {
+                        continue;
+                    }
                     _weightVelocity[i] = Momentum * _weightVelocity[i] - Alpha * NNModel.Layers[i].DeltaWeight;
                     NNModel.Layers[i].Weights += 1 / batchSize * (Momentum * _weightVelocity[i] - Alpha * NNModel.Layers[i].DeltaWeight);
 
@@ -78,6 +86,10 @@ namespace NeuralSharp
             {
                 for (int i = 0; i < _weightVelocity.Length; i++)
                 {
+                    if (NNModel.Layers[i] is not Dense)
+                    {
+                        continue;
+                    }
                     _weightVelocity[i] = Momentum * _weightVelocity[i] - Alpha * NNModel.Layers[i].DeltaWeight;
                     NNModel.Layers[i].Weights += 1 / batchSize * _weightVelocity[i];
 
