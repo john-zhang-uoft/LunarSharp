@@ -13,7 +13,7 @@ namespace NeuralSharp
         private Func<Matrix, Matrix, Matrix> _derivativeLossFunction;
         private Metric[] _metrics;
         private TrainLog _log;
-        private Optimizer _optimizer;
+        private AbstractOptimizer _optimizer;
         
         public Model(params Layer[] layers)
         {
@@ -60,9 +60,7 @@ namespace NeuralSharp
         /// </summary>
         /// <param name="input"></param>
         /// <param name="target"></param>
-        /// <param name="alpha"></param>
-        /// <param name="gamma"></param>
-        private void BackwardPass(Matrix input, Matrix target, float alpha, float gamma)
+        private void BackwardPass(Matrix input, Matrix target)
         {
             // Backpropagation algorithm to calculate gradient with respect to neurons
             // then with respect to weights and biases and adjust parameters

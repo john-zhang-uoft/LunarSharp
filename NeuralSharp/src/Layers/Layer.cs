@@ -151,9 +151,6 @@ namespace NeuralSharp
         }
         
         public abstract void ResetGradients();
-
-
-        public abstract void UpdateParameters(int batchSize, float alpha, float gamma);
-
+        
     }
 }

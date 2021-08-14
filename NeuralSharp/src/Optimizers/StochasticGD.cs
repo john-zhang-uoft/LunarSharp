@@ -50,14 +50,14 @@ namespace NeuralSharp
         /// <summary>
         /// Updates model parameters.
         /// </summary>
-        public override void UpdateParameters()
+        public override void UpdateParameters(int batchSize)
         {
             if (Momentum == 0)
             {
                 for (int i = 0; i < _weightVelocity.Length; i++)
                 {
-                    NNModel.Layers[i].Weights -= Alpha * NNModel.Layers[i].DeltaWeight;
-                    NNModel.Layers[i].Biases -= Beta * NNModel.Layers[i].DeltaBias;
+                    NNModel.Layers[i].Weights -= Alpha / batchSize * NNModel.Layers[i].DeltaWeight;
+                    NNModel.Layers[i].Biases -= Beta / batchSize * NNModel.Layers[i].DeltaBias;
                 }
 
                 return;
@@ -68,10 +68,10 @@ namespace NeuralSharp
                 for (int i = 0; i < _weightVelocity.Length; i++)
                 {
                     _weightVelocity[i] = Momentum * _weightVelocity[i] - Alpha * NNModel.Layers[i].DeltaWeight;
-                    NNModel.Layers[i].Weights += Momentum * _weightVelocity[i] - Alpha * NNModel.Layers[i].DeltaWeight;
+                    NNModel.Layers[i].Weights += 1 / batchSize * (Momentum * _weightVelocity[i] - Alpha * NNModel.Layers[i].DeltaWeight);
 
                     _biasVelocity[i] = Momentum * _biasVelocity[i] - Beta * NNModel.Layers[i].DeltaBias;
-                    NNModel.Layers[i].Biases += Momentum * _biasVelocity[i] - Beta * NNModel.Layers[i].DeltaBias;
+                    NNModel.Layers[i].Biases += 1 / batchSize * (Momentum * _biasVelocity[i] - Beta * NNModel.Layers[i].DeltaBias);
                 }
             }
             else
@@ -79,13 +79,12 @@ namespace NeuralSharp
                 for (int i = 0; i < _weightVelocity.Length; i++)
                 {
                     _weightVelocity[i] = Momentum * _weightVelocity[i] - Alpha * NNModel.Layers[i].DeltaWeight;
-                    NNModel.Layers[i].Weights += _weightVelocity[i];
+                    NNModel.Layers[i].Weights += 1 / batchSize * _weightVelocity[i];
 
                     _biasVelocity[i] = Momentum * _biasVelocity[i] - Beta * NNModel.Layers[i].DeltaBias;
-                    NNModel.Layers[i].Biases += _biasVelocity[i];
+                    NNModel.Layers[i].Biases += 1 / batchSize * _biasVelocity[i];
                 }
             }
         }
-        //////////////////////// MAKE SURE THAT BATCH SIZE IS INCLUDED IN THIS METHOD OR FIRST DIVIDE DELTA BY BATCH SIZE IN FITMODEL
     }
 }

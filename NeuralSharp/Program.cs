@@ -34,8 +34,8 @@ namespace NeuralSharp
                 new Dense(shape: 10, ActivationFunctions.Sigmoid)
             );
             
-            model.Compile(Optimizer.None, LossFunctions.MeanSquaredError, new[] {Metric.None});
-            model.Fit(x, y, epochs: 10, alpha: 0.001f, gamma: 0.001f, batchSize: 16, validationFrac: 0.2f);
+            model.Compile(optimizer: new StochasticGD(alpha: 0.001f, beta: 0.001f, momentum: 0.9f), LossFunctions.MeanSquaredError, new[] {Metric.None});
+            model.Fit(x, y, epochs: 10, batchSize: 16, validationFrac: 0.2f);
 
             
             // Load test data

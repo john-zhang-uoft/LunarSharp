@@ -60,9 +60,6 @@ namespace NeuralSharp
         public override void ResetGradients()
         {
         }
-
-        public override void UpdateParameters(int batchSize, float alpha, float gamma)
-        {
-        }
+        
     }
 }

@@ -14,7 +14,7 @@ namespace NeuralSharp
         /// <param name="optimizer">Optimizer used during training.</param>
         /// <param name="lossFunction">Loss function used during training.</param>
         /// <param name="metrics">List of metrics used to validate the dataset on during training and testing.</param>
-        public void Compile(Optimizer optimizer, LossFunctions lossFunction, IEnumerable<Metric> metrics)
+        public void Compile(AbstractOptimizer optimizer, LossFunctions lossFunction, IEnumerable<Metric> metrics)
         {
             if (!Layers[0].IsValidInputShape())
             {
@@ -68,7 +68,8 @@ namespace NeuralSharp
             }
 
             _optimizer = optimizer;
-
+            _optimizer.ConnectToModel(this);
+            _optimizer.Initialize();
         }
 
         /// <summary>
