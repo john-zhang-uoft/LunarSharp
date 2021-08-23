@@ -14,7 +14,10 @@ namespace NeuralSharp
         /// <summary>
         /// The matrix class is implemented as 1D arrays for better performance compared to 2D arrays
         /// </summary>
-        public readonly float[] Data;
+        public float[] Data
+        {
+            get; private set;
+        }
 
         public readonly (int rows, int cols) Shape;
 
