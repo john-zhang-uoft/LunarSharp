@@ -23,4 +23,4 @@ Plans:
 3. Add optimizers.
 4. Implement automatic differentiation.
 
-![Image of NeuralSharp code](https://github.com/john-zhang-uoft/NeuralSharp/blob/master/Mnist%20Example.png)
+![Image of NeuralSharp code](https://github.com/john-zhang-uoft/NeuralSharp/blob/master/NeuralSharp%20Picture.png)
