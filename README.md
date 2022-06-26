@@ -20,7 +20,7 @@ Plans:
 
 1. Implement softmax activation and categorical cross entropy loss.
 2. Implement saving model (as a csv file most likely).
-3. Add optimizers.
-4. Implement automatic differentiation.
+3. Implement automatic differentiation.
+4. Implement graph neural networks.
 
 ![Image of NeuralSharp code](https://github.com/john-zhang-uoft/NeuralSharp/blob/master/NeuralSharp%20Picture.png)
