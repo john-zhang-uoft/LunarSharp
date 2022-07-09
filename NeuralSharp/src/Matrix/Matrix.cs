@@ -89,6 +89,28 @@ namespace NeuralSharp
             return new Matrix(shape, data);
         }
 
+        public static Matrix ZerosLike(Matrix matrix)
+        {
+            float[] data = new float[matrix.Shape.rows * matrix.Shape.rows];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = 0;
+            }
+
+            return new Matrix(matrix.Shape, data);
+        }
+        
+        public static Matrix OnesLike(Matrix matrix)
+        {
+            float[] data = new float[matrix.Shape.rows * matrix.Shape.rows];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = 1;
+            }
+
+            return new Matrix(matrix.Shape, data);
+        }
+        
         public float this[int i, int j]
         {
             get => Data[i * Shape.cols + j];

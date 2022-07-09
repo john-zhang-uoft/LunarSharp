@@ -9,11 +9,11 @@ namespace NeuralSharp
     public partial class Model
     {
         public List<Layer> Layers { get; private set; }
-        private Func<Matrix, Matrix, float> _lossFunction;
-        private Func<Matrix, Matrix, Matrix> _derivativeLossFunction;
-        private Metric[] _metrics;
-        private TrainLog _log;
-        private AbstractOptimizer _optimizer;
+        public Func<Matrix, Matrix, float> LossFunction;
+        public Func<Matrix, Matrix, Matrix> DerivativeLossFunction;
+        public Metric[] Metrics;
+        public TrainLog Log;
+        public AbstractOptimizer Optimizer;
         
         public Model(params Layer[] layers)
         {
@@ -44,7 +44,7 @@ namespace NeuralSharp
         /// Feed an input through all the layers of the network as the forward step during backpropagation.
         /// </summary>
         /// <param name="input"></param>
-        private void ForwardPass(Matrix input)
+        public void ForwardPass(Matrix input)
         {
             Layers[0].FeedForward(input);
 
@@ -56,23 +56,94 @@ namespace NeuralSharp
         }
 
         /// <summary>
-        /// Feed an input through all the layers of the network.
+        /// Feed an input through all the layers of the network as the forward step during backpropagation and return output.
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="target"></param>
-        private void BackwardPass(Matrix input, Matrix target)
+        public Matrix ForwardPassReturn(Matrix input)
+        {
+            ForwardPass(input);
+            return Layers[^1].Neurons;
+        }
+        
+        
+        // /// <summary>
+        // /// Feed an input through all the layers of the network.
+        // /// </summary>
+        // /// <param name="input"></param>
+        // /// <param name="target"></param>
+        // public void BackwardPass(Matrix input, Matrix target)
+        // {
+        //     // Backpropagation algorithm to calculate gradient with respect to neurons
+        //     // then with respect to weights and biases and adjust parameters
+        //     Layers[^1].BackPropagateLastLayer(DerivativeLossFunction(Layers[^1].Neurons, target), Layers[^2].Neurons);
+        //
+        //     for (int l = Layers.Count - 2; l >= 1; l--)
+        //     {
+        //         Layers[l].BackPropagateNotLastLayer(Layers[l + 1], Layers[l - 1].Neurons);
+        //     }
+        //
+        //     Layers[0].BackPropagateNotLastLayer(Layers[1], input);
+        // }
+
+        /// <summary>
+        /// Backpropagate through all the layers of the network.
+        /// </summary>
+        /// <param name="derivativeLossFunction"></param>
+        /// <param name="input"></param>
+        public void BackwardPass(Matrix derivativeLossFunction, Matrix input)
         {
             // Backpropagation algorithm to calculate gradient with respect to neurons
             // then with respect to weights and biases and adjust parameters
-
-            Layers[^1].BackPropagate(null, Layers[^2].Neurons, target, _derivativeLossFunction);
+            Layers[^1].BackPropagateLastLayer(derivativeLossFunction, Layers[^2].Neurons);
 
             for (int l = Layers.Count - 2; l >= 1; l--)
             {
-                Layers[l].BackPropagate(Layers[l + 1], Layers[l - 1].Neurons, target, _derivativeLossFunction);
+                Layers[l].BackPropagateNotLastLayer(Layers[l + 1], Layers[l - 1].Neurons);
+            }
+            Layers[0].BackPropagateNotLastLayer(Layers[1], input);
+        }
+
+
+        /// <summary>
+        /// Backpropagate through all the layers of the network and update weights on some layers.
+        /// </summary>
+        /// <param name="derivativeLossFunction"></param>
+        /// <param name="input"></param>
+        /// <param name="layersToChangeParameters"></param>
+        public void BackwardPassSelective(Matrix derivativeLossFunction, Matrix input, List<int> layersToChangeParameters)
+        {
+            // Backpropagation algorithm to calculate gradient with respect to neurons
+            // then with respect to weights and biases and adjust parameters
+            if (layersToChangeParameters.Contains(Layers.Count - 1))
+            {
+                Layers[^1].BackPropagateLastLayer(derivativeLossFunction, Layers[^2].Neurons);
+            }
+            else
+            {
+                Layers[^1].BackPropagateLastLayerNoUpdatingParameters(derivativeLossFunction, Layers[^2].Neurons);
             }
 
-            Layers[0].BackPropagate(Layers[1], input, target, _derivativeLossFunction);
+            for (int l = Layers.Count - 2; l >= 1; l--)
+            {
+                if (layersToChangeParameters.Contains(l))
+                {
+                    Layers[l].BackPropagateNotLastLayer(Layers[l + 1], Layers[l - 1].Neurons);
+                }
+                else
+                {
+                    Layers[l].BackPropagateNotLastLayerNoUpdatingParameters(Layers[l + 1], Layers[l - 1].Neurons);
+                }
+
+            }
+
+            if (layersToChangeParameters.Contains(0))
+            {
+                Layers[0].BackPropagateNotLastLayer(Layers[1], input);
+            }
+            else
+            {
+                Layers[0].BackPropagateNotLastLayerNoUpdatingParameters(Layers[1], input);
+            }
         }
         
         public void Save(string filePath)

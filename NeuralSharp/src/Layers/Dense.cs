@@ -64,10 +64,8 @@ namespace NeuralSharp
         /// </summary>
         /// <param name="nextLayer"></param>
         /// <param name="previousLayerNeurons"></param>
-        /// <param name="target"></param>
-        /// <param name="dLossFunction"></param>
-        public override void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target,
-            Func<Matrix, Matrix, Matrix> dLossFunction)
+        
+        public override void BackPropagateNotLastLayer(Layer nextLayer, Matrix previousLayerNeurons)
         {
             // Kronecker multiplication returns a matrix where the i-th row is the i-th neuron of the previous layer
             // multiplied by the gradient of the neurons of this layer
@@ -80,8 +78,6 @@ namespace NeuralSharp
 
             Gradient = nextLayer switch
             {
-                null => dLossFunction(Neurons, target).HadamardMult(DerivativeActivationFunction(Neurons)),
-                
                 Dense => (nextLayer.Weights.Transpose() * nextLayer.Gradient).
                     HadamardMult(DerivativeActivationFunction(Neurons)),
                 
@@ -90,6 +86,35 @@ namespace NeuralSharp
 
             DeltaWeight += Matrix.KroneckerVectorMult(previousLayerNeurons.Transpose(), Gradient).Transpose();
             DeltaBias += Gradient;
+        }
+
+        /// <summary>
+        /// Passes error back through this dense layer if this is the last layer and updates weights and biases.
+        /// </summary>
+        /// <param name="derivativeLossFunction"></param>
+        /// <param name="previousLayerNeurons"></param>
+        public override void BackPropagateLastLayer(Matrix derivativeLossFunction, Matrix previousLayerNeurons)
+        {
+            Gradient = derivativeLossFunction.HadamardMult(DerivativeActivationFunction(Neurons));
+            
+            DeltaWeight += Matrix.KroneckerVectorMult(previousLayerNeurons.Transpose(), Gradient).Transpose();
+            DeltaBias += Gradient;
+        }
+
+        public override void BackPropagateNotLastLayerNoUpdatingParameters(Layer nextLayer, Matrix previousLayerNeurons)
+        {
+            Gradient = nextLayer switch
+            {
+                Dense => (nextLayer.Weights.Transpose() * nextLayer.Gradient).
+                    HadamardMult(DerivativeActivationFunction(Neurons)),
+                
+                Dropout => nextLayer.Gradient.HadamardMult(DerivativeActivationFunction(nextLayer.Neurons))
+            };        
+        }
+
+        public override void BackPropagateLastLayerNoUpdatingParameters(Matrix derivativeLossFunction, Matrix previousLayerNeurons)
+        {
+            Gradient = derivativeLossFunction.HadamardMult(DerivativeActivationFunction(Neurons));
         }
 
         public override void ResetGradients()

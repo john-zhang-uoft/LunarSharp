@@ -44,17 +44,24 @@ namespace NeuralSharp
             Neurons = _multiplier * inputs.HadamardMult(MathUtil.RandBernoulliDistribution(_rate, inputs.Shape));
         }
 
-        public override void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target,
-            Func<Matrix, Matrix, Matrix> dLossFunction)
+        public override void BackPropagateLastLayer(Matrix derivativeLossFunction, Matrix previousLayerNeurons)
         {
-            if (nextLayer == null)
-            {
-                Gradient = dLossFunction(Neurons, target);
-            }
-            else
-            {
-                Gradient = nextLayer.Weights.Transpose() * nextLayer.Gradient;
-            }
+            Gradient = derivativeLossFunction;
+        }
+
+        public override void BackPropagateNotLastLayerNoUpdatingParameters(Layer nextLayer, Matrix previousLayerNeurons)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void BackPropagateLastLayerNoUpdatingParameters(Matrix derivativeLossFunction, Matrix previousLayerNeurons)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void BackPropagateNotLastLayer(Layer nextLayer, Matrix previousLayerNeurons)
+        {
+            Gradient = nextLayer.Weights.Transpose() * nextLayer.Gradient;
         }
 
         public override void ResetGradients()

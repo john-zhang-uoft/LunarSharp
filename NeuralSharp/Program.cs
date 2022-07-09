@@ -6,7 +6,7 @@ namespace NeuralSharp
 {
     public static class Program
     {
-        public static void Main(string[] args)
+        public static void Example(string[] args)
         {
             // Load Mnist dataset
             const string trainPath = @"C:\Users\johnz\RiderProjects\NeuralSharp2\NeuralSharp2\mnist_train.csv";
@@ -28,12 +28,12 @@ namespace NeuralSharp
             // Create dense model
             Model model = new Model(
                 new Dense(784, shape: 64, ActivationFunctions.ReLU),
-                new Dense(shape: 32, ActivationFunctions.ReLU),
+                new Dense(32, ActivationFunctions.ReLU),
                 new Dense(shape: 10, ActivationFunctions.Sigmoid)
             );
             
-            model.Compile(optimizer: new StochasticGD(alpha: 0.001f, gamma: 0.001f), LossFunctions.MeanSquaredError, new[] {Metric.None});
-            model.Fit(x, y, epochs: 5, batchSize: 16, validationFrac: 0.2f, shuffle: true);
+            model.Compile(optimizer: new StochasticGD(alpha: 0.01f, gamma: 0.01f, momentum:0.5f, nesterov:true), LossFunctions.MeanSquaredError, new[] {Metric.None});
+            model.Fit(x, y, epochs: 10, batchSize: 32, validationFrac: 0.2f, shuffle: true);
             
             // Load test data
             const string testPath = @"C:\Users\johnz\RiderProjects\NeuralSharp2\NeuralSharp2\mnist_test.csv";

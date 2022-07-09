@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,10 +17,10 @@ namespace NeuralSharp
 
         public Tensor(params int[] shape)
         {
-            Data = new float[shape.Aggregate((product, next) => product * next )];
+            Data = new float[shape.Aggregate((product, next) => product * next)];
             Shape = shape;
         }
-        
+
         public Tensor(float[] data, params int[] shape)
         {
             Data = data;
@@ -29,7 +30,7 @@ namespace NeuralSharp
         private Tensor(IEnumerable<float> data, int[] shape)
         {
             Data = data.ToArray();
-            Shape = shape;        
+            Shape = shape;
         }
 
         // Indexing
@@ -71,7 +72,7 @@ namespace NeuralSharp
             return Data[index];
         }
 
-        
+
         private void SetElement(float value, params int[] i)
         {
             if (i.Length != Shape.Length)
@@ -103,34 +104,76 @@ namespace NeuralSharp
 
             Data[index] = value;
         }
-        
+
         public Tensor ApplyToElements(Func<float, float> expression)
         {
             return new Tensor(Data.Select(expression), Shape);
         }
-        
+
+        public static Tensor HadamardMult(Tensor a, Tensor b)
+        {
+            // Element-wise multiplication
+            if (a.Shape != b.Shape)
+            {
+                throw new InvalidOperationException("Matrices must be the same size for element-wise multiplication.");
+            }
+
+            return new Tensor(a.Data.Zip(b.Data, (elemA, elemB) => elemA * elemB), a.Shape);
+        }
+
         /// <summary>
-        /// Returns a copied version of the transposed Tensor. Only defined for 2D tensors.
+        /// Performs element-wise multiplication.
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public Tensor HadamardMult(Tensor b)
+        {
+            // Element-wise multiplication
+            if (Shape != b.Shape)
+            {
+                throw new InvalidOperationException("Matrices must be the same size for element-wise multiplication.");
+            }
+
+            return new Tensor(Data.Zip(b.Data, (elemA, elemB) => elemA * elemB), Shape);
+        }
+
+        /// <summary>
+        /// Returns the sum of the all the elements of the tensor. 
         /// </summary>
         /// <returns></returns>
-        public Tensor Transpose()
+        public float SumElements()
         {
-            if (Shape.Length != 2)
+            float sum = 0;
+            for (int i = 0; i < Data.Length; i++)
             {
-                throw new InvalidDataException("Tensor must be 2D to be transposed.");
+                sum += Data[i];
+            }
+
+            return sum;
+        }
+
+        public static Tensor RandomTensor(float maxWeight, int[] shape)
+        {
+            // Creates a tensor with random elements between -maxWeight and maxWeight
+
+            if (shape == null || shape.Length == 0 || shape.Any(x => x < 1))
+            {
+                throw new InvalidDataException("Invalid tensor shape.");
             }
             
-            Tensor temp = new Tensor(Shape);
+            float[] data = new float[shape.Aggregate((product, next) => product * next)];
 
-            for (int i = 0; i < Shape[0]; i++)
+            Random randObj = new Random();
+
+            for (int i = 0; i < data.Length; i++)
             {
-                for (int j = 0; j < Shape[1]; j++)
-                {
-                    temp[j, i] = this[i, j];
-                }
+                data[i] = (float)(maxWeight * (randObj.NextDouble() * 2 - 1));
             }
 
-            return temp;
+            return new Tensor(data, shape);
         }
+        
+        
     }
 }

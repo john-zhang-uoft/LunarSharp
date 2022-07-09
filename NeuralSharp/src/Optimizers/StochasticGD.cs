@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NeuralSharp
 {
@@ -86,6 +87,70 @@ namespace NeuralSharp
             {
                 for (int i = 0; i < _weightVelocity.Length; i++)
                 {
+                    if (NNModel.Layers[i] is not Dense)
+                    {
+                        continue;
+                    }
+                    _weightVelocity[i] = Momentum * _weightVelocity[i] - Alpha * NNModel.Layers[i].DeltaWeight;
+                    NNModel.Layers[i].Weights += 1 / batchSize * _weightVelocity[i];
+
+                    _biasVelocity[i] = Momentum * _biasVelocity[i] - Beta * NNModel.Layers[i].DeltaBias;
+                    NNModel.Layers[i].Biases += 1 / batchSize * _biasVelocity[i];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates model parameters of layers whose indices are specified.
+        /// </summary>
+        public override void UpdateParameters(int batchSize, List<int> layerParametersToUpdate)
+        {
+            if (Momentum == 0)
+            {
+                for (int i = 0; i < NNModel.Layers.Count; i++)
+                {
+                    if (!layerParametersToUpdate.Contains(i))
+                    {
+                        continue;
+                    }
+                    if (NNModel.Layers[i] is not Dense)
+                    {
+                        continue;
+                    }
+                    NNModel.Layers[i].Weights -= Alpha / batchSize * NNModel.Layers[i].DeltaWeight;
+                    NNModel.Layers[i].Biases -= Beta / batchSize * NNModel.Layers[i].DeltaBias;
+                }
+
+                return;
+            }
+
+            if (Nesterov)
+            {
+                for (int i = 0; i < _weightVelocity.Length; i++)
+                {
+                    if (!layerParametersToUpdate.Contains(i))
+                    {
+                        continue;
+                    }
+                    if (NNModel.Layers[i] is not Dense)
+                    {
+                        continue;
+                    }
+                    _weightVelocity[i] = Momentum * _weightVelocity[i] - Alpha * NNModel.Layers[i].DeltaWeight;
+                    NNModel.Layers[i].Weights += 1 / batchSize * (Momentum * _weightVelocity[i] - Alpha * NNModel.Layers[i].DeltaWeight);
+
+                    _biasVelocity[i] = Momentum * _biasVelocity[i] - Beta * NNModel.Layers[i].DeltaBias;
+                    NNModel.Layers[i].Biases += 1 / batchSize * (Momentum * _biasVelocity[i] - Beta * NNModel.Layers[i].DeltaBias);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < _weightVelocity.Length; i++)
+                {
+                    if (!layerParametersToUpdate.Contains(i))
+                    {
+                        continue;
+                    }
                     if (NNModel.Layers[i] is not Dense)
                     {
                         continue;

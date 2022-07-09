@@ -61,7 +61,7 @@ namespace NeuralSharp
                 ActivationFunctions.Tanh => Activations.Tanh,
                 ActivationFunctions.ReLU => Activations.ReLU,
                 ActivationFunctions.None => Activations.None,
-                _ => throw new InvalidOperationException("Unimplemented Activation Function")
+                _ => throw new UnexpectedEnumValueException<ActivationFunctions>(activation),
             };
             DerivativeActivationFunction = activation switch
             {
@@ -69,7 +69,7 @@ namespace NeuralSharp
                 ActivationFunctions.Tanh => Activations.DerivativeTanh,
                 ActivationFunctions.ReLU => Activations.DerivativeReLU,
                 ActivationFunctions.None => Activations.DerivativeNone,
-                _ => throw new InvalidOperationException("Unimplemented Activation Function")
+                _ => throw new UnexpectedEnumValueException<ActivationFunctions>(activation),
             };
         }
 
@@ -83,7 +83,7 @@ namespace NeuralSharp
                 ActivationFunctions.Tanh => Activations.Tanh,
                 ActivationFunctions.ReLU => Activations.ReLU,
                 ActivationFunctions.None => Activations.None,
-                _ => throw new InvalidOperationException("Unimplemented Activation Function")
+                _ => throw new UnexpectedEnumValueException<ActivationFunctions>(activation),
             };
             DerivativeActivationFunction = activation switch
             {
@@ -91,7 +91,7 @@ namespace NeuralSharp
                 ActivationFunctions.Tanh => Activations.DerivativeTanh,
                 ActivationFunctions.ReLU => Activations.DerivativeReLU,
                 ActivationFunctions.None => Activations.DerivativeNone,
-                _ => throw new InvalidOperationException("Unimplemented Activation Function")
+                _ => throw new UnexpectedEnumValueException<ActivationFunctions>(activation),
             };
         }
         
@@ -99,10 +99,17 @@ namespace NeuralSharp
 
 
         public abstract void FeedForward(Matrix inputs);
+        
+        public abstract void BackPropagateNotLastLayer(Layer nextLayer, Matrix previousLayerNeurons);
+        
+        public abstract void BackPropagateLastLayer(Matrix derivativeLossFunction, Matrix previousLayerNeurons);
 
-        public abstract void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target, 
-            Func<Matrix, Matrix, Matrix> dLossFunction);
+        public abstract void
+            BackPropagateNotLastLayerNoUpdatingParameters(Layer nextLayer, Matrix previousLayerNeurons);
+        
+        public abstract void BackPropagateLastLayerNoUpdatingParameters(Matrix derivativeLossFunction, Matrix previousLayerNeurons);
 
+            
         public void Connect(Layer previousLayer)
         {
             InputShape = previousLayer.OutputShape;

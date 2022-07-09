@@ -1,4 +1,6 @@
-﻿namespace NeuralSharp
+﻿using System.Collections.Generic;
+
+namespace NeuralSharp
 {
     public abstract class AbstractOptimizer
     {
@@ -14,6 +16,8 @@
         public abstract void Initialize();
 
         public abstract void UpdateParameters(int batchSize);
-        
+     
+        public abstract void UpdateParameters(int batchSize, List<int> layerParametersToUpdate);
+
     }
 }

@@ -28,11 +28,11 @@ namespace NeuralSharp
             // Initialize train log
             if (validationFrac > 0)
             {
-                _log = new TrainLog(epochs, new List<string> { "Training Loss", "Validation Loss" });
+                Log = new TrainLog(epochs, new List<string> { "Training Loss", "Validation Loss" });
             }
             else
             {
-                _log = new TrainLog(epochs, new List<string> { "Training Loss" });
+                Log = new TrainLog(epochs, new List<string> { "Training Loss" });
             }
 
             Matrix[] xTrain = Array.Empty<Matrix>();
@@ -94,7 +94,7 @@ namespace NeuralSharp
                 {
                     for (int i = 0; i < xVal.Length; i++)
                     {
-                        valLoss += _lossFunction(Predict(xVal[i]), yVal[i]);
+                        valLoss += LossFunction(Predict(xVal[i]), yVal[i]);
                     }
 
                     valLoss /= xVal.Length;
@@ -105,11 +105,11 @@ namespace NeuralSharp
                 // Log the loss for the epoch
                 if (validationFrac != 0)
                 {
-                    _log.LogEpoch(new float[] { trainLoss, valLoss });
+                    Log.LogEpoch(new float[] { trainLoss, valLoss });
                 }
                 else
                 {
-                    _log.LogEpoch(new float[] { trainLoss });
+                    Log.LogEpoch(new float[] { trainLoss });
                 }
 
                 Console.WriteLine(message);
@@ -148,7 +148,7 @@ namespace NeuralSharp
             }
 
             // Update gradient based on the mean gradient
-            _optimizer.UpdateParameters(xBatch.Length);
+            Optimizer.UpdateParameters(xBatch.Length);
         }
 
         /// <summary>
@@ -182,13 +182,13 @@ namespace NeuralSharp
             {
                 ForwardPass(xBatch[j]);
 
-                loss += _lossFunction(Layers[^1].Neurons, yBatch[j]);
+                loss += LossFunction(Layers[^1].Neurons, yBatch[j]);
 
                 BackwardPass(xBatch[j], yBatch[j]);
             }
 
             // Update gradient based on the mean gradient
-            _optimizer.UpdateParameters(xBatch.Length);
+            Optimizer.UpdateParameters(xBatch.Length);
 
             return loss / xBatch.Length;
         }

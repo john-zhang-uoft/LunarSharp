@@ -23,29 +23,25 @@ namespace NeuralSharp
 
             for (int i = 1; i < Layers.Count; i++)
             {
-                if (Layers[i] is Dropout)
+                if (Layers[i] is not Dropout) continue;
+                if (Layers[i - 1] is Dropout)
                 {
-                    if (Layers[i - 1] is Dropout)
-                    {
-                        throw new InvalidModelArgumentException(
-                            $"Cannot compile model with two dropout layers in a row ({i - 1}, {i}).");
-                    }
+                    throw new InvalidModelArgumentException(
+                        $"Cannot compile model with two dropout layers in a row ({i - 1}, {i}).");
                 }
             }
             
             for (int i = 0; i < Layers.Count; i++)
             {
-                if (Layers[i] is not Dropout)
+                if (Layers[i] is Dropout) continue;
+                if (!Layers[i].IsValidOutputShape())
                 {
-                    if (!Layers[i].IsValidOutputShape())
-                    {
-                        throw new InvalidDataException($"The shape of layer {i + 1} was not provided or is invalid.");
-                    }  
+                    throw new InvalidDataException($"The shape of layer {i + 1} was not provided or is invalid.");
                 }
 
             }
 
-            _metrics = new HashSet<Metric>(metrics).ToArray();
+            Metrics = new HashSet<Metric>(metrics ?? Array.Empty<Metric>()).ToArray();
                 
             ConnectLayers();
             
@@ -54,24 +50,68 @@ namespace NeuralSharp
             switch (lossFunction)
             {
                 case LossFunctions.MeanSquaredError:
-                    _lossFunction = Loss.MeanSquaredError;
-                    _derivativeLossFunction = Loss.DMeanSquaredError;
+                    LossFunction = Loss.MeanSquaredError;
+                    DerivativeLossFunction = Loss.DMeanSquaredError;
                     break;
 
                 case LossFunctions.BinaryCrossEntropy:
-                    _lossFunction = Loss.BinaryCrossEntropy;
-                    _derivativeLossFunction = Loss.DBinaryCrossEntropy;
+                    LossFunction = Loss.BinaryCrossEntropy;
+                    DerivativeLossFunction = Loss.DBinaryCrossEntropy;
                     break;
                 
                 default:
                     throw new InvalidModelArgumentException("Invalid loss function.");
             }
 
-            _optimizer = optimizer;
-            _optimizer.ConnectToModel(this);
-            _optimizer.Initialize();
+            Optimizer = optimizer;
+            Optimizer.ConnectToModel(this);
+            Optimizer.Initialize();
         }
 
+        public void Compile(AbstractOptimizer optimizer, LossFunctionDelegate lossFunction,
+            IEnumerable<Metric> metrics = null)
+        {
+            if (!Layers[0].IsValidInputShape())
+            {
+                throw new InvalidDataException("The input shape for the first layer was not provided or is invalid.");
+            }
+
+            for (int i = 1; i < Layers.Count; i++)
+            {
+                if (Layers[i] is not Dropout) continue;
+                if (Layers[i - 1] is Dropout)
+                {
+                    throw new InvalidModelArgumentException(
+                        $"Cannot compile model with two dropout layers in a row ({i - 1}, {i}).");
+                }
+            }
+            
+            for (int i = 0; i < Layers.Count; i++)
+            {
+                if (Layers[i] is Dropout) continue;
+                if (!Layers[i].IsValidOutputShape())
+                {
+                    throw new InvalidDataException($"The shape of layer {i + 1} was not provided or is invalid.");
+                }
+            }
+            
+            Metrics = new HashSet<Metric>(metrics ?? Array.Empty<Metric>()).ToArray();
+                
+            ConnectLayers();
+            
+            InitializeParametersXavier();
+
+            LossFunction = (x,y) => lossFunction(x, y);
+            Optimizer = optimizer;
+            Optimizer.ConnectToModel(this);
+            Optimizer.Initialize();
+        }
+        
+        /// <summary>
+        /// Delegate for custom loss function.
+        /// </summary>
+        public delegate float LossFunctionDelegate(Matrix output, Matrix trueLabel);
+        
         /// <summary>
         /// Connects the layers in the model together to construct weight matrices of the right size.
         /// </summary>

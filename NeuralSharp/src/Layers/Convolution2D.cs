@@ -59,8 +59,22 @@ namespace NeuralSharp
             throw new NotImplementedException();
         }
 
-        public override void BackPropagate(Layer nextLayer, Matrix previousLayerNeurons, Matrix target,
-            Func<Matrix, Matrix, Matrix> dLossFunction)
+        public override void BackPropagateNotLastLayer(Layer nextLayer, Matrix previousLayerNeurons)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void BackPropagateLastLayer(Matrix derivativeLossFunction, Matrix previousLayerNeurons)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void BackPropagateNotLastLayerNoUpdatingParameters(Layer nextLayer, Matrix previousLayerNeurons)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void BackPropagateLastLayerNoUpdatingParameters(Matrix derivativeLossFunction, Matrix previousLayerNeurons)
         {
             throw new NotImplementedException();
         }

@@ -18,7 +18,7 @@ namespace NeuralSharp
         {
             DataLoader dataLoader = new DataLoader(filePath);
 
-            List<Matrix> res = new List<Matrix>();
+            var res = new List<Matrix>();
 
             using (dataLoader._streamReader)
             {
