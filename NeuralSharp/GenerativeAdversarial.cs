@@ -9,7 +9,7 @@ namespace NeuralSharp.Tests
 {
     public static class GenerativeAdversarial
     {
-        public static void Main()
+        public static void Example()
         {
             // Load Mnist dataset
             const string trainPath = @"C:\Users\johnz\RiderProjects\NeuralSharp2\NeuralSharp2\mnist_train.csv";

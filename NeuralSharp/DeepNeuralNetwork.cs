@@ -4,9 +4,9 @@ using NeuralSharp;
 
 namespace NeuralSharp
 {
-    public static class Program
+    public static class DeepNeuralNetwork
     {
-        public static void Example(string[] args)
+        public static void Main(string[] args)
         {
             // Load Mnist dataset
             const string trainPath = @"C:\Users\johnz\RiderProjects\NeuralSharp2\NeuralSharp2\mnist_train.csv";

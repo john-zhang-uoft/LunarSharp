@@ -144,7 +144,7 @@ namespace NeuralSharp
             for (int j = 0; j < xBatch.Length; j++)
             {
                 ForwardPass(xBatch[j]);
-                BackwardPass(xBatch[j], yBatch[j]);
+                BackwardPass(DerivativeLossFunction(Layers[^1].Neurons, yBatch[j]), xBatch[j]);
             }
 
             // Update gradient based on the mean gradient
@@ -184,7 +184,7 @@ namespace NeuralSharp
 
                 loss += LossFunction(Layers[^1].Neurons, yBatch[j]);
 
-                BackwardPass(xBatch[j], yBatch[j]);
+                BackwardPass(DerivativeLossFunction(Layers[^1].Neurons, yBatch[j]), xBatch[j]);
             }
 
             // Update gradient based on the mean gradient
