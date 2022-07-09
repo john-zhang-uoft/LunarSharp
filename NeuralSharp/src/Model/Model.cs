@@ -65,26 +65,6 @@ namespace NeuralSharp
             return Layers[^1].Neurons;
         }
         
-        
-        // /// <summary>
-        // /// Feed an input through all the layers of the network.
-        // /// </summary>
-        // /// <param name="input"></param>
-        // /// <param name="target"></param>
-        // public void BackwardPass(Matrix input, Matrix target)
-        // {
-        //     // Backpropagation algorithm to calculate gradient with respect to neurons
-        //     // then with respect to weights and biases and adjust parameters
-        //     Layers[^1].BackPropagateLastLayer(DerivativeLossFunction(Layers[^1].Neurons, target), Layers[^2].Neurons);
-        //
-        //     for (int l = Layers.Count - 2; l >= 1; l--)
-        //     {
-        //         Layers[l].BackPropagateNotLastLayer(Layers[l + 1], Layers[l - 1].Neurons);
-        //     }
-        //
-        //     Layers[0].BackPropagateNotLastLayer(Layers[1], input);
-        // }
-
         /// <summary>
         /// Backpropagate through all the layers of the network.
         /// </summary>
