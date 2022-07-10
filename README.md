@@ -28,4 +28,9 @@ Plans:
 6. Implement basic Recurrent Neural Network and LTSM model
 7. Implement ImageMatrix class that takes a matrix and makes sure it's in the correct format for IO.
 
-![Image of NeuralSharp code](https://github.com/john-zhang-uoft/NeuralSharp/blob/main/NeuralSharp%20Picture.png)
+Deep Neural Network implementation with NeuralSharp
+![Image of DNN code](https://github.com/john-zhang-uoft/NeuralSharp/blob/main/NeuralSharp%20Picture.png)
+
+Generative Adversarial Network implementation with NeuralSharp
+![Image of GAN model](https://github.com/john-zhang-uoft/NeuralSharp/blob/main/GAN_Img1.png)
+![Image of GAN training](https://github.com/john-zhang-uoft/NeuralSharp/blob/main/GAN_Img2.png)
