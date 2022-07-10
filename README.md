@@ -5,6 +5,8 @@ A native C# neural network library in progress.
 
 Latest update: July 9, 2022 - Restructured forward and backward passes and exposed training methods for custom training loops, created Generative Adversarial Network (GAN) example.
 
+Warning: momentum has been broken and is currently not working but otherwise the GAN example and DNN are.
+
 My goal is to create a working high level C# neural network library with basic functionality (for fun)! I'm not following any tutorials that provide any code so that I can hone my fundamental neural network knowledge and practice creating a well-structured design.
 Performance is not a top priority (otherwise C# would not be the language of choice), however, making computations within C# efficient is.
 Everything is made from scratch, including the Matrix class, DataLoader, etc.
