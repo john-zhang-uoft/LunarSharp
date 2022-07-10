@@ -27,6 +27,11 @@ namespace NeuralSharp
             return new Matrix(a.Data.Zip(b.Data, (elemA, elemB) => elemA + elemB), a.Shape);
         }
 
+        public static Matrix operator +(Matrix a, float b)
+        {
+            return new Matrix(a.Data.Select(x => x + b), a.Shape);
+        }
+
         public static Matrix operator -(Matrix a, Matrix b)
         {
             if (a.Shape != b.Shape)
@@ -37,6 +42,11 @@ namespace NeuralSharp
             return new Matrix(a.Data.Zip(b.Data, (elemA, elemB) => elemA - elemB), a.Shape);
         }
 
+        public static Matrix operator -(Matrix a, float b)
+        {
+            return new Matrix(a.Data.Select(x => x - b), a.Shape);
+        }
+        
         public static Matrix operator *(Matrix a, int b)
         {
             return new Matrix(a.Data.Select(i => i * b), a.Shape);
@@ -46,7 +56,7 @@ namespace NeuralSharp
         {
             return new Matrix(a.Data.Select(i => i * b), a.Shape);
         }
-
+        
         public static Matrix operator /(Matrix a, int b)
         {
             return new Matrix(a.Data.Select(i => i / b), a.Shape);

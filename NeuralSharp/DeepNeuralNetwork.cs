@@ -6,10 +6,10 @@ namespace NeuralSharp
 {
     public static class DeepNeuralNetwork
     {
-        public static void Main(string[] args)
+        public static void Example(string[] args)
         {
             // Load Mnist dataset
-            const string trainPath = @"C:\Users\johnz\RiderProjects\NeuralSharp2\NeuralSharp2\mnist_train.csv";
+            const string trainPath = @"C:\Users\johnz\RiderProjects\JohnsNeuralSharp\NeuralSharp\NeuralSharp\mnist_train.csv";
             var data = DataLoader.ReadCsv(trainPath, ",", numHeaderRows: 1);
             
             // Get features and labels
@@ -33,10 +33,10 @@ namespace NeuralSharp
             );
             
             model.Compile(optimizer: new StochasticGD(alpha: 0.001f, gamma: 0.001f), LossFunctions.MeanSquaredError, new[] {Metric.None});
-            model.Fit(x, y, epochs: 5, batchSize: 16, validationFrac: 0.2f, shuffle: false);
+            model.Fit(x, y, epochs: 10, batchSize: 16, validationFrac: 0.2f, shuffle: false);
             
             // Load test data
-            const string testPath = @"C:\Users\johnz\RiderProjects\NeuralSharp2\NeuralSharp2\mnist_test.csv";
+            const string testPath = @"C:\Users\johnz\RiderProjects\JohnsNeuralSharp\NeuralSharp\NeuralSharp\mnist_test.csv";
             var testData = DataLoader.ReadCsv(testPath, ",", numHeaderRows: 1);
 
             var (testY, testX) = Matrix.ExtractCol(testData, 0);

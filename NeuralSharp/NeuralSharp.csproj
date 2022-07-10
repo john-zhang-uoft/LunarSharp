@@ -5,4 +5,12 @@
         <OutputType>Exe</OutputType>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="GAN_Images" />
+    </ItemGroup>
+
 </Project>

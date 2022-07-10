@@ -24,5 +24,6 @@ Plans:
 4. Implement graph neural networks.
 5. Implement an autoencoder example
 6. Implement basic Recurrent Neural Network and LTSM model
+7. Implement ImageMatrix class that takes a matrix and makes sure it's in the correct format for IO.
 
 ![Image of NeuralSharp code](https://github.com/john-zhang-uoft/NeuralSharp/blob/main/NeuralSharp%20Picture.png)
