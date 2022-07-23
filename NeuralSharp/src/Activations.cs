@@ -34,12 +34,12 @@ namespace NeuralSharp
 
         private static float Tanh(float x)
         {
-            return (float) ((Math.Tanh(x) + 1) / 2);
+            return (float) Math.Tanh(x);
         }
         
         private static float DerivativeTanh(float x)
         {
-            return (float) ((1 - Math.Pow(Math.Tanh(x), 2)) / 2);
+            return (float) (1 - Math.Pow(Math.Tanh(x), 2));
         }
         
         public static Matrix Tanh(Matrix x)
