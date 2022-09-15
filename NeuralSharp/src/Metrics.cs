@@ -6,21 +6,39 @@ namespace NeuralSharp
 {
     public enum Metric
     {
-        Accuracy, None
+        Accuracy,
+        MeanSquaredError,
+        None
     }
+
 
     public class Metrics
     {
         private const float Tolerance = 0.000001f;
-        public static float Accuracy(Matrix output, Matrix target)
+        public static float Accuracy(Matrix[] outputs, Matrix[] targets)
         {
-            if (output.Shape != target.Shape)
+            if (outputs.Length != targets.Length)
             {
                 throw new InvalidDataException("Matrices must be the same size for calculating accuracy.");
             }
-            
-            return output.Data.Zip(target.Data,
-                (outputElem, targetElem) => (Math.Abs(outputElem - targetElem) < Tolerance) ? 1f : 0f).Sum() / target.Data.Length;
+
+            return outputs.Zip(targets, Accuracy).Sum() / outputs.Length;
+        }
+        // Optimized evaluating inside model.evaluate so we only iterate over outputs once
+        public static float Accuracy(Matrix output, Matrix target)
+        {
+            return Encoder<Matrix>.ProbabilitiesToOneHot(output) == target ? 1f : 0f;
+        }
+
+        public static float MeanSquaredError(Matrix[] outputs, Matrix[] targets)
+        {
+            return outputs.Zip(targets, MeanSquaredError).Sum() / outputs.Length;
+        }
+
+        // Optimized evaluating inside model.evaluate so we only iterate over outputs once
+        public static float MeanSquaredError(Matrix output, Matrix target)
+        {
+            return Loss.MeanSquaredError(output, target);
         }
     }
 }

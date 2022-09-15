@@ -11,9 +11,11 @@ namespace NeuralSharp
         public List<Layer> Layers { get; private set; }
         public Func<Matrix, Matrix, float> LossFunction;
         public Func<Matrix, Matrix, Matrix> DerivativeLossFunction;
-        public Metric[] Metrics;
+        public Metric[] ModelMetrics;
         public TrainLog Log;
         public AbstractOptimizer Optimizer;
+        
+        public bool TrainMode { get; private set; }
         
         public Model(params Layer[] layers)
         {
@@ -64,7 +66,7 @@ namespace NeuralSharp
             ForwardPass(input);
             return Layers[^1].Neurons;
         }
-        
+
         /// <summary>
         /// Backpropagate through all the layers of the network.
         /// </summary>
@@ -80,6 +82,7 @@ namespace NeuralSharp
             {
                 Layers[l].BackPropagateNotLastLayer(Layers[l + 1], Layers[l - 1].Neurons);
             }
+
             Layers[0].BackPropagateNotLastLayer(Layers[1], input);
         }
 
@@ -90,7 +93,8 @@ namespace NeuralSharp
         /// <param name="derivativeLossFunction"></param>
         /// <param name="input"></param>
         /// <param name="layersToChangeParameters"></param>
-        public void BackwardPassSelective(Matrix derivativeLossFunction, Matrix input, List<int> layersToChangeParameters)
+        public void BackwardPassSelective(Matrix derivativeLossFunction, Matrix input,
+            List<int> layersToChangeParameters)
         {
             // Backpropagation algorithm to calculate gradient with respect to neurons
             // then with respect to weights and biases and adjust parameters
@@ -113,7 +117,6 @@ namespace NeuralSharp
                 {
                     Layers[l].BackPropagateNotLastLayerNoUpdatingParameters(Layers[l + 1], Layers[l - 1].Neurons);
                 }
-
             }
 
             if (layersToChangeParameters.Contains(0))
@@ -125,11 +128,11 @@ namespace NeuralSharp
                 Layers[0].BackPropagateNotLastLayerNoUpdatingParameters(Layers[1], input);
             }
         }
-        
+
         public void Save(string filePath)
         {
         }
-        
+
         /// <summary>
         /// Uses the full capabilities of the model to make a prediction given an input.
         /// </summary>
@@ -138,34 +141,63 @@ namespace NeuralSharp
         public Matrix Predict(Matrix input)
         {
             Matrix previousNeurons = input;
-            
+
             // Feedforward result through each layer that is not a dropout layer
             foreach (Layer t in Layers.Where(t => t is not Dropout))
             {
                 t.FeedForward(previousNeurons);
                 previousNeurons = t.Neurons;
             }
-            
+
             return Layers[^1].Neurons;
         }
 
-        public float Evaluate(Matrix[] inputs, Matrix[] expectedOutputs, Metric[] metrics)
+        public Dictionary<Metric, float> Evaluate(Matrix[] inputs, Matrix[] expectedOutputs, Metric[] metrics, bool verbose = true)
         {
-            float accuracy = 0;
-            string message = "";
+            if (inputs.Length != expectedOutputs.Length)
+            {
+                throw new InvalidDataException(
+                    $"Inputs do not have the same length as expected outputs ({inputs.Length} != {expectedOutputs.Length})");
+            }
+
+            Dictionary<Metric, float> d = new Dictionary<Metric, float>(metrics.Length);
+            foreach (Metric m in metrics)
+            {
+                d.Add(m, 0);
+            }
             
             for (int i = 0; i < inputs.Length; i++)
             {
-                if (Encoder<Matrix>.ProbabilitiesToOneHot(Predict(inputs[i])) == expectedOutputs[i])
-                {
-                    accuracy += 1;
+                Matrix output = Predict(inputs[i]);
+                
+                if (metrics.Contains(Metric.Accuracy)) {
+                    d[Metric.Accuracy] += Metrics.Accuracy(output, expectedOutputs[i]);
+                }
+
+                if (metrics.Contains(Metric.MeanSquaredError)) {
+                    d[Metric.MeanSquaredError] += Metrics.MeanSquaredError(output, expectedOutputs[i]);
                 }
             }
+            
+            if (verbose)
+            {
+                string message = "";
 
-            accuracy /= inputs.Length;
-            message += $"Accuracy: {accuracy}";
-            Console.WriteLine(message);
-            return accuracy;
+                foreach (Metric m in metrics)
+                {
+                    d[m] /= inputs.Length;
+                    message += $"{m.ToString()}: {d[m]}\n";
+                }
+                Console.WriteLine(message);
+            }
+            else
+            {
+                foreach (Metric m in metrics)
+                {
+                    d[m] /= inputs.Length;
+                }
+            }
+            return d;
         }
     }
 }

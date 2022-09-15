@@ -41,7 +41,7 @@ namespace NeuralSharp
 
             }
 
-            Metrics = new HashSet<Metric>(metrics ?? Array.Empty<Metric>()).ToArray();
+            ModelMetrics = new HashSet<Metric>(metrics ?? Array.Empty<Metric>()).ToArray();
                 
             ConnectLayers();
             
@@ -95,7 +95,7 @@ namespace NeuralSharp
                 }
             }
             
-            Metrics = new HashSet<Metric>(metrics ?? Array.Empty<Metric>()).ToArray();
+            ModelMetrics = new HashSet<Metric>(metrics ?? Array.Empty<Metric>()).ToArray();
                 
             ConnectLayers();
             

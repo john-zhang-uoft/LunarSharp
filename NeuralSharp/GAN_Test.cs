@@ -8,9 +8,9 @@ using System.Linq;
 
 namespace NeuralSharp
 {
-    public static class GenerativeAdversarial
+    public static class Gan_Test
     {
-        public static void Test()
+        public static void Main()
         {
             // Load Mnist dataset
             const string trainPath = @"C:\Users\johnz\RiderProjects\JohnsNeuralSharp\NeuralSharp\NeuralSharp\mnist_train.csv";
@@ -21,31 +21,31 @@ namespace NeuralSharp
 
             var target = Matrix.MakeFullMatrixOfNum((1, 1), 1);
 
-            List<Matrix> onlyTargets = new List<Matrix>();
-            List<Matrix> onlyTargetLabels = new List<Matrix>();
-            for (int i = 0; i < x.Length; i++)
-            {
-                if (y[i] == target)
-                {
-                    onlyTargets.Add(x[i]);
-                    onlyTargetLabels.Add(y[i]);
-                }    
-            }
-
-            x = onlyTargets.ToArray();
-            y = onlyTargetLabels.ToArray();
-
-            x = new Matrix[]{x[0]};
-            y = new Matrix[]{y[0]};
+            // List<Matrix> onlyTargets = new List<Matrix>();
+            // List<Matrix> onlyTargetLabels = new List<Matrix>();
+            // for (int i = 0; i < x.Length; i++)
+            // {
+            //     if (y[i] == target)
+            //     {
+            //         onlyTargets.Add(x[i]);
+            //         onlyTargetLabels.Add(y[i]);
+            //     }    
+            // }
+            //
+            // x = onlyTargets.ToArray();
+            // y = onlyTargetLabels.ToArray();
+            //
+            // x = new Matrix[]{x[0]};
+            // y = new Matrix[]{y[0]};
             // Turn features into proper format
             for (int i = 0; i < x.Length; i++)
             {
                 x[i] = x[i].Transpose();
             }
-            
-            Bitmap img =
-                ImageIO.ConstructGrayScaleBitMapFromData(x[0].Data.Select(i => (int)i).ToArray(), 28, 28);
-            ImageIO.SaveBitmapAsPNG(img,  $@"C:\Users\johnz\RiderProjects\JohnsNeuralSharp\NeuralSharp\NeuralSharp\GAN_Images\One_image.png");
+            //
+            // Bitmap img =
+            //     ImageIO.ConstructGrayScaleBitMapFromData(x[0].Data.Select(i => (int)i).ToArray(), 28, 28);
+            // ImageIO.SaveBitmapAsPNG(img,  $@"C:\Users\johnz\RiderProjects\JohnsNeuralSharp\NeuralSharp\NeuralSharp\GAN_Images\One_image.png");
 
             // Normalize data to between -1 and 1
             for (int i = 0; i < x.Length; i++)
@@ -62,7 +62,7 @@ namespace NeuralSharp
             );
             // Create dense generator model
             Model generator = new Model(
-                new Dense(inputShape: 100, shape: 144, ActivationFunctions.ReLU),
+                new Dense(inputShape: 10, shape: 144, ActivationFunctions.ReLU),
                 new Dense(shape: 256, ActivationFunctions.ReLU),
                 new Dense(shape: 784, ActivationFunctions.Tanh),
                 discriminator.Layers[0],
@@ -105,13 +105,13 @@ namespace NeuralSharp
 
             discriminator.ConnectLayers();
             discriminator.InitializeParametersXavier();
-            discriminator.Optimizer = new StochasticGD(alpha: 0.0f, gamma: 0.1f);
+            discriminator.Optimizer = new StochasticGD(alpha: 0.01f, gamma: 0.01f);
             discriminator.Optimizer.ConnectToModel(discriminator);
             discriminator.Optimizer.Initialize();
 
             generator.ConnectLayers();
             generator.InitializeParametersXavier();
-            generator.Optimizer = new StochasticGD(alpha: 0.1f, gamma: 0.1f);
+            generator.Optimizer = new StochasticGD(alpha: 0.01f, gamma: 0.01f);
             generator.Optimizer.ConnectToModel(generator);
             generator.Optimizer.Initialize();
 
@@ -133,7 +133,7 @@ namespace NeuralSharp
 
                 for (int i = 0; i < images.Length; i++)
                 {
-                    Matrix randomNoise = Matrix.RandomMatrix(1, 100, 1);
+                    Matrix randomNoise = Matrix.RandomMatrix(1, 10, 1);
                     generator.ForwardPass(randomNoise);
                     Matrix generatedImage = generator.Layers[2].Neurons;
 
@@ -162,7 +162,7 @@ namespace NeuralSharp
                 Console.WriteLine($"Discriminator Loss: {discLoss}");
                 Console.WriteLine($"Generator Loss: {genLoss}");
                 
-                Matrix noise = Matrix.RandomMatrix(1, 100, 1);
+                Matrix noise = Matrix.RandomMatrix(1, 10, 1);
                 generator.ForwardPass(noise);
                 Matrix genExample = generator.Layers[2].Neurons;
                 genExample = genExample * 127.5f + 127.5f;
@@ -173,7 +173,7 @@ namespace NeuralSharp
             }
 
             const int epochs = 5000;
-            const int batchSize = 512;
+            const int batchSize = 8;
 
             // I need to detach backpropagation from delta bias and weight in the future
 
@@ -204,11 +204,11 @@ namespace NeuralSharp
                 epochDiscLoss /= x.Length;
                 epochGenLoss /= x.Length;
 
-                message += $"\n\nEpochDiscLoss loss = {epochDiscLoss}\n";
-                message += $"EpochGenLoss loss = {epochGenLoss}\n";
+                message += $"\n\nDisc loss = {epochDiscLoss}\n";
+                message += $"Gen loss = {epochGenLoss}\n";
 
                 Console.WriteLine(message);
-                Matrix noise = Matrix.RandomMatrix(1, 100, 1);
+                Matrix noise = Matrix.RandomMatrix(1, 10, 1);
                 generator.ForwardPass(noise);
                 Matrix genExample = generator.Layers[2].Neurons;
                 genExample = genExample * 127.5f + 127.5f;

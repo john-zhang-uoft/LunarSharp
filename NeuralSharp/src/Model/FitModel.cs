@@ -28,7 +28,12 @@ namespace NeuralSharp
             // Initialize train log
             if (validationFrac > 0)
             {
-                Log = new TrainLog(epochs, new List<string> { "Training Loss", "Validation Loss" });
+                var trackingMetrics = new List<string> {"Training Loss", "Validation Loss"};
+                foreach (Metric m in ModelMetrics)
+                {
+                    trackingMetrics.Add(m.ToString());
+                }
+                Log = new TrainLog(epochs, trackingMetrics);
             }
             else
             {
@@ -87,30 +92,23 @@ namespace NeuralSharp
 
                 message += $"Train loss = {trainLoss}";
 
-                // Validation data
-                float valLoss = 0;
+                
+                // Validation
 
-                if (validationFrac != 0)
+                if (validationFrac > 0)
                 {
+                    float valLoss = 0;
+                    
                     for (int i = 0; i < xVal.Length; i++)
                     {
                         valLoss += LossFunction(Predict(xVal[i]), yVal[i]);
                     }
-
                     valLoss /= xVal.Length;
-
                     message += $"\tValidation loss = {valLoss}";
-                }
-
-                // Log the loss for the epoch
-                if (validationFrac != 0)
-                {
                     Log.LogEpoch(new float[] { trainLoss, valLoss });
                 }
-                else
-                {
-                    Log.LogEpoch(new float[] { trainLoss });
-                }
+
+                Log.LogEpoch(new float[] { trainLoss });
 
                 Console.WriteLine(message);
             }
